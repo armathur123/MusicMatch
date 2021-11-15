@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, TextInput} from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import { Credentials } from './Credentials';
 import {decode as atob, encode as btoa} from 'base-64'
@@ -16,14 +16,11 @@ export default function App() {
       global.atob = atob;
   }
   
-  const spotify = Credentials();
-  const [token, setToken] = useState('');  
+  const spotify = Credentials(); //grabs preset credentials
+  const [token, setToken] = useState('');
   const [playlistData, setPlaylistData] = useState('');
   const [username, setUsername] = useState('');  
-
-  const updateUser = (val) => {
-    setUsername(val)
-  }
+  const [chosenPlaylist1, setChosenPlaylist1] = useState();
 
   useEffect(() => {
     axios('https://accounts.spotify.com/api/token', {
@@ -36,8 +33,8 @@ export default function App() {
     })
     .then(tokenResponse => {      
       setToken(tokenResponse.data.access_token);
-      // const userID = '12176356166';
-      const userID = 'wxdd0utbytkuddlgj17cep92f'
+      const userID = '12176356166';
+      // const userID = 'wxdd0utbytkuddlgj17cep92f'
       axios(`https://api.spotify.com/v1/users/${userID}/playlists`, {
         method: 'GET',
         headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token}
@@ -46,13 +43,31 @@ export default function App() {
         setPlaylistData(playlistRaw);
         });
       });
-  },[spotify.ClientId, spotify.ClientSecret]);
-  console.log(playlistData);
+  },[username]);
+  console.log(playlistData.data);
+  // console.log(playlistData.data?.items[0].owner.display_name);
+
+  const playlistPressHandler = (playlistID) => {
+    setChosenPlaylist1(playlistID);
+  }
 
   return (
     <View style={styles.container}>
-      <Textfield setUser = {updateUser}></Textfield>
-      <Text>{username}</Text>
+      <Textfield setUser = {setUsername}></Textfield>
+      {(playlistData.data?.items[0] === undefined) ? <Text>User not found!</Text> : 
+      <View>
+        <Text>User: {playlistData.data?.items[0]?.owner?.display_name}</Text>
+        <FlatList style={styles.flatlistContainer}
+          keyExtractor={(item) => item.id}
+          data={playlistData.data?.items}
+          renderItem={({item}) => (
+            <TouchableOpacity onPress={() => playlistPressHandler(item.id)}>
+              <Text>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+        <Text>{chosenPlaylist1}</Text>
+      </View>}
       <StatusBar style="auto" />
     </View>
   );
@@ -65,4 +80,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  flatlistContainer: {
+    borderWidth: 1,
+    borderColor: "#777",
+    borderRadius: "5px",
+    padding: 8,
+  }
 });

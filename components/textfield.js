@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput} from 'react-native';
 const Textfield = ({setUser}) => {    
     return (
         <View style={styles.container}>
-            <Text>Enter Username</Text>
+            <Text>Enter Spotify Username!</Text>
             <TextInput 
             style={styles.input}
             placeholder='Check your account information for this!'
@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
     input:{
       borderWidth: 1,
       borderColor: "#777",
-      borderRadius: "5px",
+      borderRadius: 5,
       padding: 8,
       margin: 10,
-      width: "275px",
+      width: 275,
     }
   });
  
