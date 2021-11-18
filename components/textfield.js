@@ -5,10 +5,11 @@ const Textfield = ({setUser}) => {
 
     return (
         <View style={styles.container}>
-            <Text>Enter Spotify Username</Text>
+            <Text style={styles.text}>Enter Spotify Username</Text>
             <TextInput 
             style={styles.input}
             placeholder='Check your account information for this!'
+            placeholderTextColor="white"
             onChangeText={(val) => setUser(val)}/>
         </View>
     );
@@ -22,11 +23,19 @@ const styles = StyleSheet.create({
     },
     input:{
       borderWidth: 1,
-      borderColor: "#777",
+      borderColor: "white",
       borderRadius: 5,
       padding: 8,
-      margin: 10,
-      width: 275,
+      margin: 12,
+      width: 307,
+      color: "white",
+      fontFamily: 'System',
+    },
+    text: {
+        color:"white",
+        fontFamily: 'System',
+        fontSize: 30,
+        textAlign: "center"
     }
   });
  

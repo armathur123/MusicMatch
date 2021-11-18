@@ -1,21 +1,35 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Textfield from '../components/textfield';
+import NextButton from '../components/nextbutton';
+import axios from 'axios';
 
+const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token}) => {
 
-const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist}) => {
+    const getSongs = (token, playlistID, setSongList) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
+        method: 'GET',
+        headers: { 'Authorization' : 'Bearer ' + token}
+    })
+    .then (songsRaw => {
+        setSongList(songsRaw?.data?.items);
+    })
+    .catch(err => {
+        console.log("getsongs error");
+        console.log(err);
+    });
 
     const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
-        setPlaylist(playlistData.name + playlistData?.tracks?.total);
+        setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
         getSongs(token, playlistData.id, setSonglist);
     }
+    console.log(songlist)
     
     return ( 
         <View style = {styles.inputContainer}>
           <Textfield setUser = {setUsername}></Textfield>
-          {(playlistData.data?.items[0] === undefined) ? <Text>User not found!</Text> : 
+          {(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>User not found!</Text> : 
           <View>
-            <Text>User: {playlistData.data?.items[0]?.owner?.display_name}</Text>
+            <Text style={styles.textfield}>User: {playlistData.data?.items[0]?.owner?.display_name}</Text>
             <FlatList style={styles.flatlistContainer}
               keyExtractor={(item) => item.id}
               data={playlistData.data?.items}
@@ -25,12 +39,17 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
                     style={{width: 40, height: 40}}
                     source = {{uri: item.images[0]?.url}}
                   />
-                  <Text>{item.name}</Text>
+                  <View style={styles.itemtextContainer}>
+                    <Text style={styles.textfieldItem}>{item.name}</Text>
+                  </View>
                 </TouchableOpacity>
               )}
             />
-            <Text>{chosenPlaylist}</Text>
+            <View>
+                <Text style={styles.textfield}>{chosenPlaylist}</Text>
+            </View>
           </View>}
+          <NextButton innerText = {innerText}></NextButton>
         </View>
      );
 }
@@ -43,29 +62,43 @@ const styles = StyleSheet.create({
       alignItems: "center",
     },
     flatlistContainer: {
-      borderWidth: 1,
-      borderColor: "#777",
       borderRadius: 5,
       padding: 8,
-      height: 300,
+      maxHeight: 450,
+      width: 270,
     },
     playlistItem: {
       display: "flex",
       flexDirection: "row",
       padding: 10,
+      borderWidth: 1,
+      borderColor: "#777",
+      borderRadius: 5,
+      backgroundColor: "#6aa84f",
+      marginTop: 10
     },
     container: {
         display: "flex",
         alignItems: "center",
         flexDirection: "column",
     },
-    input:{
+    itemtextContainer: {
+        display:"flex",
+        alignItems: "center",
+        justifyContent: "center",
         borderWidth: 1,
-        borderColor: "#777",
-        borderRadius: 5,
-        padding: 8,
-        margin: 10,
-        width: 275,
+        borderColor:"white",
+    },
+    textfield:{
+        color:"white",
+        fontFamily: 'System',
+        textAlign: "center"
+    },
+    textfieldItem:{
+        color:"white",
+        fontFamily: 'System',
+        fontSize: 10,
+        textAlign: "center"
     }
   });
 

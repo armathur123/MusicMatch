@@ -4,11 +4,11 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} f
 import axios from 'axios';
 import { Credentials } from './Credentials';
 import {decode as atob, encode as btoa} from 'base-64'
-import Textfield from './components/textfield';
 import Playlistinput from './components/playlistinput';
 
 
 export default function App() {
+
   //set atob and btoa as global variables on React Native
   if (!global.btoa) {
       global.btoa = btoa;
@@ -16,7 +16,13 @@ export default function App() {
   if (!global.atob) {
       global.atob = atob;
   }
-  
+
+  const customTextProps = { 
+    style: { 
+      fontFamily: "San Francisco"
+    }
+  }
+
   const spotify = Credentials(); //grabs preset credentials
   const [token, setToken] = useState('');
   const [playlistData1, setPlaylistData1] = useState('');
@@ -65,23 +71,6 @@ export default function App() {
       });
   },[username1, username2]);
 
-  const getSongs = (token, playlistID, setSongList) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
-    method: 'GET',
-    headers: { 'Authorization' : 'Bearer ' + token}
-  })
-  .then (songsRaw => {
-    setSongList(songsRaw.data?.items);
-  })
-  .catch(err => {
-      console.log("getsongs error");
-      console.log(err);
-  });
-
-  const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
-    setPlaylist(playlistData.name + playlistData?.tracks?.total);
-    getSongs(token, playlistData.id, setSonglist);
-  }
-
   return (
     <View style={styles.container}>
       <View style = {styles.rowContainer}>
@@ -106,10 +95,9 @@ export default function App() {
             <Text>{chosenPlaylist1}</Text>
           </View>}
         </View> */}
-        <Playlistinput playlistData = {playlistData1} username = {username1}setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1}></Playlistinput>
-        <Playlistinput playlistData = {playlistData2} username = {username2}setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2}></Playlistinput>
+      <Playlistinput playlistData = {playlistData1} username = {username1}setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token}></Playlistinput>
+        {/* <Playlistinput playlistData = {playlistData2} username = {username2}setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!"></Playlistinput> */}
       </View>
-
       <StatusBar style="auto" />
     </View>
   );
@@ -118,9 +106,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#0b0b0b',
   },
   rowContainer:{
     display: "flex",
@@ -141,9 +129,4 @@ const styles = StyleSheet.create({
     width:200,
     height: 300,
   },
-  playlistItem: {
-    display: "flex",
-    flexDirection: "row",
-    padding: 10,
-  }
 });
