@@ -74,27 +74,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style = {styles.rowContainer}>
-        {/* <View style = {styles.inputContainer}>
-          <Textfield setUser = {setUsername1}></Textfield>
-          {(playlistData1.data?.items[0] === undefined) ? <Text>User not found!</Text> : 
-          <View>
-            <Text>User: {playlistData1.data?.items[0]?.owner?.display_name}</Text>
-            <FlatList style={styles.flatlistContainer}
-              keyExtractor={(item) => item.id}
-              data={playlistData1.data?.items}
-              renderItem={({item}) => (
-                <TouchableOpacity onPress={() => playlistPressHandler(item, setChosenPlaylist1, setSonglist1)}  style = {styles.playlistItem}>
-                  <Image
-                    style={{width: 40, height: 40}}
-                    source = {{uri: item.images[0]?.url}}
-                  />
-                  <Text>{item.name}</Text>
-                </TouchableOpacity>
-              )}
-            />
-            <Text>{chosenPlaylist1}</Text>
-          </View>}
-        </View> */}
       <Playlistinput playlistData = {playlistData1} username = {username1}setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token}></Playlistinput>
         {/* <Playlistinput playlistData = {playlistData2} username = {username2}setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!"></Playlistinput> */}
       </View>
@@ -130,3 +109,27 @@ const styles = StyleSheet.create({
     height: 300,
   },
 });
+
+/* 
+old code that im scared to delete even though im using version control lmao
+<View style = {styles.inputContainer}>
+  <Textfield setUser = {setUsername1}></Textfield>
+  {(playlistData1.data?.items[0] === undefined) ? <Text>User not found!</Text> : 
+  <View>
+    <Text>User: {playlistData1.data?.items[0]?.owner?.display_name}</Text>
+    <FlatList style={styles.flatlistContainer}
+      keyExtractor={(item) => item.id}
+      data={playlistData1.data?.items}
+      renderItem={({item}) => (
+        <TouchableOpacity onPress={() => playlistPressHandler(item, setChosenPlaylist1, setSonglist1)}  style = {styles.playlistItem}>
+          <Image
+            style={{width: 40, height: 40}}
+            source = {{uri: item.images[0]?.url}}
+          />
+          <Text>{item.name}</Text>
+        </TouchableOpacity>
+      )}
+    />
+    <Text>{chosenPlaylist1}</Text>
+  </View>}
+</View> */

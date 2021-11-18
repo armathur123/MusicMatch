@@ -48,8 +48,8 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
             <View>
                 <Text style={styles.textfield}>{chosenPlaylist}</Text>
             </View>
+            {!(songlist === undefined) && <NextButton innerText = {innerText}></NextButton>}
           </View>}
-          <NextButton innerText = {innerText}></NextButton>
         </View>
      );
 }
