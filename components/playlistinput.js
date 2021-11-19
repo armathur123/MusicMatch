@@ -15,14 +15,17 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
       total = songsRaw?.data?.total;
       let count = songsRaw?.data?.items.length;
       currentCount += count;
-      console.log("currentCount: " + currentCount)
-      console.log("total: " + total);
+      songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
       if (currentCount < total){ //recursively calls until entire playlist has been gotten
-        songlistLocal.push(...songsRaw?.data?.items);
         getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
       }
-      console.log("done");
-      setSongList(songlistLocal);
+      else {
+        console.log("currentCount: " + currentCount)
+        console.log("total: " + total);
+        console.log("done");
+        setSongList(songlistLocal);
+      }
+      console.log('iteration');
     })
     .catch(err => {
       console.log("getsongs error");
