@@ -4,7 +4,7 @@ import Textfield from '../components/textfield';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 
-const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation}) => {
+const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
 
     const getSongs = (token, playlistID, setSongList) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
         method: 'GET',
@@ -22,7 +22,6 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
         setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
         getSongs(token, playlistData.id, setSonglist);
     }
-    console.log(songlist)
     
     return ( 
         <View style = {styles.inputContainer}>
@@ -48,7 +47,7 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
             <View>
                 <Text style={styles.textfield}>{chosenPlaylist}</Text>
             </View>
-            {!(songlist === undefined) && <NextButton innerText = {innerText} navigation = {navigation}></NextButton>}
+            {!(songlist === undefined) && <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage}></NextButton>}
           </View>}
         </View>
      );

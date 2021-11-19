@@ -7,6 +7,7 @@ import {decode as atob, encode as btoa} from 'base-64'
 import Playlistinput from './components/playlistinput';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ResultPage from './components/resultpage';
 
 
 export default function App() {
@@ -79,14 +80,14 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="firstEntry">
-          {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1}setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} />}
+          {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry"/>}
         </Stack.Screen>
         <Stack.Screen name="secondEntry">
-          {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2}setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!"/>}
+          {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage"/>}
         </Stack.Screen>
-
-          {/* <Playlistinput playlistData = {playlistData1} username = {username1}setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token}></Playlistinput> */}
-          {/* <Playlistinput playlistData = {playlistData2} username = {username2}setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!"></Playlistinput> */}
+        <Stack.Screen name="resultPage">
+          {props => <ResultPage {...props} songlist1 = {songlist1} songlist2 = {songlist2}/>}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

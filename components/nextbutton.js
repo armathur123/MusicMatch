@@ -2,10 +2,10 @@ import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 
 
-const NextButton = ({innerText, navigation}) => {
+const NextButton = ({innerText, navigation, navPage}) => {
     return (
         <View>
-            <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('secondEntry')}>
+            <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
               <Text style={styles.text}>{innerText}</Text>
             </TouchableOpacity>
         </View>
