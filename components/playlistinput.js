@@ -5,22 +5,33 @@ import NextButton from '../components/nextbutton';
 import axios from 'axios';
 
 const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
-
-    const getSongs = (token, playlistID, setSongList) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
-        method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + token}
+  let songlistLocal = [];
+    const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
+      method: 'GET',
+      headers: { 'Authorization' : 'Bearer ' + token}
     })
     .then (songsRaw => {
-        setSongList(songsRaw?.data?.items);
+      console.log(songsRaw);
+      total = songsRaw?.data?.total;
+      let count = songsRaw?.data?.items.length;
+      currentCount += count;
+      console.log("currentCount: " + currentCount)
+      console.log("total: " + total);
+      if (currentCount < total){ //recursively calls until entire playlist has been gotten
+        songlistLocal.push(...songsRaw?.data?.items);
+        getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
+      }
+      console.log("done");
+      setSongList(songlistLocal);
     })
     .catch(err => {
-        console.log("getsongs error");
-        console.log(err);
+      console.log("getsongs error");
+      console.log(err);
     });
 
     const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
-        setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
-        getSongs(token, playlistData.id, setSonglist);
+      setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
+      getSongs(token, playlistData.id, setSonglist, 0, 0, 0);
     }
     
     return ( 

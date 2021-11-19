@@ -61,7 +61,6 @@ export default function App() {
         setUserPlaylistData(playlistRaw);
 
       }).catch(err => {
-
         console.log("setplaylist error");
         console.log(err);
       });
