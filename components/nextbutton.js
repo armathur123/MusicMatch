@@ -2,11 +2,11 @@ import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 
 
-const NextButton = ({innerText}) => {
+const NextButton = ({innerText, navigation}) => {
     return (
         <View>
-            <TouchableOpacity style = {styles.button}>
-              <Text>{innerText}</Text>
+            <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate('secondEntry')}>
+              <Text style={styles.text}>{innerText}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -19,10 +19,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#6D1404",
-    color: "white",
     padding: 7,
     borderRadius: 5,
   },
+  text: {
+    color: "white"
+  }
 });
 
 export default NextButton;

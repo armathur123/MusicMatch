@@ -4,7 +4,7 @@ import Textfield from '../components/textfield';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 
-const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token}) => {
+const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation}) => {
 
     const getSongs = (token, playlistID, setSongList) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
         method: 'GET',
@@ -48,7 +48,7 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
             <View>
                 <Text style={styles.textfield}>{chosenPlaylist}</Text>
             </View>
-            {!(songlist === undefined) && <NextButton innerText = {innerText}></NextButton>}
+            {!(songlist === undefined) && <NextButton innerText = {innerText} navigation = {navigation}></NextButton>}
           </View>}
         </View>
      );
@@ -58,8 +58,11 @@ const styles = StyleSheet.create({
     inputContainer: {
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#0b0b0b',
+      width: "100%",
+      height: "100%"
     },
     flatlistContainer: {
       borderRadius: 5,
