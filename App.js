@@ -26,7 +26,7 @@ export default function App() {
     }
   }
 
-  const spotify = Credentials(); //grabs preset credentials
+  const spotify = Credentials(); //grabs preset credentials: clientID and secret from my personal profile
   const [token, setToken] = useState('');
   const [playlistData1, setPlaylistData1] = useState('');
   const [playlistData2, setPlaylistData2] = useState('');
@@ -50,9 +50,9 @@ export default function App() {
     })
     .then(tokenResponse => {      
       setToken(tokenResponse.data.access_token);
-      //example user IDS
-      // const userID = '12176356166';
-      // const userID = 'wxdd0utbytkuddlgj17cep92f'
+      //example user IDS for testing reference
+      // const userID = '12176356166'; my personal spotify
+      // const userID = 'wxdd0utbytkuddlgj17cep92f' my roommates
       const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, {
         method: 'GET',
         headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token}
@@ -71,7 +71,7 @@ export default function App() {
         console.log("gettoken error");
         console.log(err);
       });
-  },[username1, username2]);
+  },[username1, username2]); //updates everytime username changes
 
   const Stack = createNativeStackNavigator();
 
