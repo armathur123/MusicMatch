@@ -11,7 +11,6 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
       headers: { 'Authorization' : 'Bearer ' + token}
     })
     .then (songsRaw => {
-      console.log(songsRaw);
       total = songsRaw?.data?.total;
       let count = songsRaw?.data?.items.length;
       currentCount += count;
@@ -25,7 +24,6 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
         console.log("done");
         setSongList(songlistLocal);
       }
-      console.log('iteration');
     })
     .catch(err => {
       console.log("getsongs error");
@@ -80,7 +78,7 @@ const styles = StyleSheet.create({
     flatlistContainer: {
       borderRadius: 5,
       padding: 8,
-      maxHeight: 450,
+      maxHeight: 400,
       width: 270,
     },
     playlistItem: {
