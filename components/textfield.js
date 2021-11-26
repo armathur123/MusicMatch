@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, TextInput} from 'react-native';
 
 const Textfield = ({setUser}) => {    
-
+    
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Enter Spotify Username</Text>

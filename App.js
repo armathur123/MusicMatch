@@ -20,12 +20,6 @@ export default function App() {
       global.atob = atob;
   }
 
-  const customTextProps = { 
-    style: { 
-      fontFamily: "San Francisco"
-    }
-  }
-
   const spotify = Credentials(); //grabs preset credentials: clientID and secret from my personal profile
   const [token, setToken] = useState('');
   const [playlistData1, setPlaylistData1] = useState('');
@@ -53,17 +47,17 @@ export default function App() {
       //example user IDS for testing reference
       // const userID = '12176356166'; my personal spotify
       // const userID = 'wxdd0utbytkuddlgj17cep92f' my roommates
-      const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, {
+      const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, { //gets users public playlists
         method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token}
+        headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
       })
       .then (playlistRaw => {      
         setUserPlaylistData(playlistRaw);
-
       }).catch(err => {
         console.log("setplaylist error");
         console.log(err);
       });
+      //run usergrab for both usernames
       usergrab(username1, setPlaylistData1);
       usergrab(username2, setPlaylistData2);
       })
@@ -73,15 +67,15 @@ export default function App() {
       });
   },[username1, username2]); //updates everytime username changes
 
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator(); //stacknavigator instance
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="firstEntry">
+        <Stack.Screen name="firstEntry"> {/*first playlist input entry*/}
           {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry"/>}
         </Stack.Screen>
-        <Stack.Screen name="secondEntry">
+        <Stack.Screen name="secondEntry"> {/*second playlist input entry*/}
           {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage"/>}
         </Stack.Screen>
         <Stack.Screen name="resultPage">
@@ -92,6 +86,7 @@ export default function App() {
   );
 }
 
+//css
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -122,27 +117,3 @@ const styles = StyleSheet.create({
     height: 300,
   },
 });
-
-/* 
-old code that im scared to delete even though im using version control lmao
-<View style = {styles.inputContainer}>
-  <Textfield setUser = {setUsername1}></Textfield>
-  {(playlistData1.data?.items[0] === undefined) ? <Text>User not found!</Text> : 
-  <View>
-    <Text>User: {playlistData1.data?.items[0]?.owner?.display_name}</Text>
-    <FlatList style={styles.flatlistContainer}
-      keyExtractor={(item) => item.id}
-      data={playlistData1.data?.items}
-      renderItem={({item}) => (
-        <TouchableOpacity onPress={() => playlistPressHandler(item, setChosenPlaylist1, setSonglist1)}  style = {styles.playlistItem}>
-          <Image
-            style={{width: 40, height: 40}}
-            source = {{uri: item.images[0]?.url}}
-          />
-          <Text>{item.name}</Text>
-        </TouchableOpacity>
-      )}
-    />
-    <Text>{chosenPlaylist1}</Text>
-  </View>}
-</View> */
