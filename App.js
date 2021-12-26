@@ -67,17 +67,28 @@ export default function App() {
       });
   },[username1, username2]); //updates everytime username changes
 
+  function HomeScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+      </View>
+    );
+  }
+
   const Stack = createNativeStackNavigator(); //stacknavigator instance
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="firstEntry"> {/*first playlist input entry*/}
+        {/*first playlist input entry*/}
+        <Stack.Screen name="firstEntry">
           {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry"/>}
         </Stack.Screen>
-        <Stack.Screen name="secondEntry"> {/*second playlist input entry*/}
+        {/*second playlist input entry*/}
+        <Stack.Screen name="secondEntry">
           {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage"/>}
         </Stack.Screen>
+        {/*Results Page*/}
         <Stack.Screen name="resultPage">
           {props => <ResultPage {...props} songlist1 = {songlist1} songlist2 = {songlist2}/>}
         </Stack.Screen>

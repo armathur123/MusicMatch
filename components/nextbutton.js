@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 
 const NextButton = ({innerText, navigation, navPage}) => {

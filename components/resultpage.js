@@ -16,7 +16,7 @@ const ResultPage = ({songlist1, songlist2}) => {
     const commonSongCatcher = () => { //find common songs
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {
-                if (song1?.track?.name == song2?.track?.name){
+                if (song1?.track?.id == song2?.track?.id){
                     songCount += 1
                     commonSongLocal.push(song1);
                 }
