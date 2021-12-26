@@ -67,14 +67,6 @@ export default function App() {
       });
   },[username1, username2]); //updates everytime username changes
 
-  function HomeScreen() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-      </View>
-    );
-  }
-
   const Stack = createNativeStackNavigator(); //stacknavigator instance
 
   return (
