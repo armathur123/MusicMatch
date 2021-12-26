@@ -4,7 +4,7 @@ import Textfield from '../components/textfield';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 
-const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
+const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
   let songlistLocal = [];
   const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
     method: 'GET',
@@ -18,10 +18,8 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
     if (currentCount < total){ //recursively calls until entire playlist has been gotten
       getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
     }
-    else {
-      console.log("currentCount: " + currentCount)
-      console.log("total: " + total);
-      console.log("done");
+    else { //all songs have been caught, sets songlist
+      console.log(songlistLocal);
       setSongList(songlistLocal);
     }
   })
@@ -32,13 +30,13 @@ const Playlistinput = ({setUsername, setSonglist, setChosenPlaylist, playlistDat
 
     const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
       setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
-      getSongs(token, playlistData.id, setSonglist, 0, 0, 0);
+      getSongs(token, playlistData.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
     }
     
     return ( 
         <View style = {styles.inputContainer}>
           <Textfield setUser = {setUsername}></Textfield>
-          {(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>User not found!</Text> : 
+          {(playlistData.data?.items[0] === undefined || username === '') ? <Text style={styles.textfield}>User not found!</Text> : 
           <View>
             <Text style={styles.textfield}>User: {playlistData.data?.items[0]?.owner?.display_name}</Text>
             <FlatList style={styles.flatlistContainer}
