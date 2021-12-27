@@ -5,10 +5,9 @@ const Textfield = ({setUser}) => {
     
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Enter Spotify Username</Text>
             <TextInput 
             style={styles.input}
-            placeholder='Check your account information for this!'
+            placeholder='Enter Spotify Username'
             placeholderTextColor="white"
             onChangeText={(val) => setUser(val)}/>
         </View>

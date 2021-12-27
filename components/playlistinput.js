@@ -36,7 +36,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
     return ( 
         <View style = {styles.inputContainer}>
           <Textfield setUser = {setUsername}></Textfield>
-          {(playlistData.data?.items[0] === undefined || username === '') ? <Text style={styles.textfield}>User not found!</Text> : 
+          {(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>User not found!</Text> : 
           <View>
             <Text style={styles.textfield}>User: {playlistData.data?.items[0]?.owner?.display_name}</Text>
             <FlatList style={styles.flatlistContainer}
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
       display: "flex",
       flexDirection: "column",
       alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#0b0b0b',
+      justifyContent: 'flex-start',
+      backgroundColor: '#121212',
       width: "100%",
       height: "100%"
     },

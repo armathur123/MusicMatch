@@ -43,10 +43,10 @@ export default function App() {
       method: 'POST'
     })
     .then(tokenResponse => {      
-      setToken(tokenResponse.data.access_token);
+      setToken(tokenResponse.data.access_token); //grabs and sets token based on credentials
       //example user IDS for testing reference
       // const userID = '12176356166'; my personal spotify
-      // const userID = 'wxdd0utbytkuddlgj17cep92f' my roommates
+
       const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, { //gets users public playlists
         method: 'GET',
         headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
@@ -57,6 +57,7 @@ export default function App() {
         console.log("setplaylist error");
         console.log(err);
       });
+      
       //run usergrab for both usernames
       usergrab(username1, setPlaylistData1);
       usergrab(username2, setPlaylistData2);
@@ -65,6 +66,8 @@ export default function App() {
         console.log("gettoken error");
         console.log(err);
       });
+      console.log("token")
+      console.log(token)
   },[username1, username2]); //updates everytime username changes
 
   function HomeScreen() {
@@ -79,9 +82,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator //hide top header bar
+        screenOptions={{
+          headerShown: false
+        }}
+      >
         {/*first playlist input entry*/}
-        <Stack.Screen name="firstEntry">
+        <Stack.Screen name="Enter Spotify Username!">
           {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry"/>}
         </Stack.Screen>
         {/*second playlist input entry*/}
@@ -103,10 +110,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0b0b0b',
-  },
-  firstentry: {
-    backgroundColor:"black"
   },
   rowContainer:{
     display: "flex",
