@@ -115,23 +115,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rowContainer:{
-    display: "flex",
-    flexDirection: "row",
-    padding: 10,
-  },
-  inputContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  flatlistContainer: {
-    borderWidth: 1,
-    borderColor: "#777",
-    borderRadius: 5,
-    padding: 8,
-    width:200,
-    height: 300,
-  },
 });

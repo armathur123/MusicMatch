@@ -1,7 +1,10 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import React, {useState, useEffect} from 'react';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
+import {Dimensions} from 'react-native';
+
 
 const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
 
@@ -36,31 +39,23 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
       getSongs(token, playlistData.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
     }
 
-    const handleUsernameInput = (val) => {
-      console.log(val)
-      if (val != "") {
-        setUsername(val);
-      }
-      else {
-        setUsername("");
-      }
-    }
-
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
             {!(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>{playlistData.data?.items[0]?.owner?.display_name}</Text> : <Text style={styles.textfield}>{message}</Text>}
-            <View style={styles.container}>
+            <View style={styles.searchSection}>
+              <Ionicons style={styles.searchIcon} name="ios-search" size={20} color="white"/>
               <TextInput 
               style={styles.input}
               placeholder='Enter Spotify Username'
               placeholderTextColor="white"
-              onChangeText={(val) => handleUsernameInput(val.trim())}/>
+              underlineColorAndroid="transparent"
+              onChangeText={(val) => setUsername(val.trim())}/>
             </View> 
           </View>
           {!(playlistData.data?.items[0] === undefined) && 
-          <View>
-            <FlatList style={styles.flatlistContainer}
+          <View style={styles.flatlistContainer}>
+            <FlatList style={styles.flatlist}
               keyExtractor={(item) => item.id}
               data={playlistData.data?.items}
               renderItem={({item}) => (
@@ -90,69 +85,81 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       alignItems: 'center',
       justifyContent: 'flex-start',
+      flex: 1,
       backgroundColor: '#121212',
       width: "100%",
       height: "100%"
     },
-    inputContainer: {
-      display: "flex",
-      flexDirection: "column",
+    searchSection: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
       alignItems: 'center',
-      justifyContent: 'flex-start',
       backgroundColor: '#171717',
-      width: "100%",
-      borderRadius: "10px",
-      padding: "20px"
-    },
-    flatlistContainer: {
-      borderRadius: 5,
-      padding: 8,
-      maxHeight: 400,
-      width: 270,
-    },
-    playlistItem: {
-      display: "flex",
-      flexDirection: "row",
-      padding: 10,
-      borderWidth: 1,
-      borderColor: "#777",
-      borderRadius: 5,
-      backgroundColor: "#6aa84f",
-      marginTop: 10
-    },
-    input:{
       borderWidth: 1,
       borderColor: "white",
       borderRadius: 5,
-      padding: 8,
-      margin: 12,
-      width: 307,
-      color: "white",
+  },
+  searchIcon: {
+      padding: 10,
+  },
+  inputContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#171717',
+    width: "100%",
+    borderRadius: "10px",
+    padding: "20px"
+  },
+  flatlistContainer: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+  },
+  flatlist: {
+    borderRadius: 5,
+    padding: 8,
+    maxHeight: 400,
+    width: "100%",
+    backgroundColor: '#121212',
+    flex: 1,
+  },
+  playlistItem: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#777",
+    borderRadius: 5,
+    backgroundColor: "#6aa84f",
+    marginTop: 10
+  },
+  input:{
+    borderWidth: 1,
+    borderColor: "#171717",
+    width: 307,
+    color: "white",
+    fontFamily: 'System',
+  },
+  itemtextContainer: {
+      display:"flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor:"white",
+  },
+  textfield:{
+      color:"white",
       fontFamily: 'System',
-    },
-    container: {
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
-    },
-    itemtextContainer: {
-        display:"flex",
-        alignItems: "center",
-        justifyContent: "center",
-        borderWidth: 1,
-        borderColor:"white",
-    },
-    textfield:{
-        color:"white",
-        fontFamily: 'System',
-        textAlign: "center"
-    },
-    textfieldItem:{
-        color:"white",
-        fontFamily: 'System',
-        fontSize: 10,
-        textAlign: "center"
-    }
-  });
+      textAlign: "center"
+  },
+  textfieldItem:{
+      color:"white",
+      fontFamily: 'System',
+      fontSize: 10,
+      textAlign: "center"
+  }
+});
 
 export default Playlistinput
