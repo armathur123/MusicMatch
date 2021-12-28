@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import Textfield from '../components/textfield';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 
 const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
+
+  const [message, setMessage] = useState('');
   let songlistLocal = [];
+
+
   const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
     method: 'GET',
     headers: { 'Authorization' : 'Bearer ' + token}
@@ -32,13 +35,31 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
       setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
       getSongs(token, playlistData.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
     }
-    
+
+    const handleUsernameInput = (val) => {
+      console.log(val)
+      if (val != "") {
+        setUsername(val);
+      }
+      else {
+        setUsername("");
+      }
+    }
+
     return ( 
-        <View style = {styles.inputContainer}>
-          <Textfield setUser = {setUsername}></Textfield>
-          {(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>User not found!</Text> : 
+        <View style = {styles.Container}>
+          <View style = {styles.inputContainer}>
+            {!(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>{playlistData.data?.items[0]?.owner?.display_name}</Text> : <Text style={styles.textfield}>{message}</Text>}
+            <View style={styles.container}>
+              <TextInput 
+              style={styles.input}
+              placeholder='Enter Spotify Username'
+              placeholderTextColor="white"
+              onChangeText={(val) => handleUsernameInput(val.trim())}/>
+            </View> 
+          </View>
+          {!(playlistData.data?.items[0] === undefined) && 
           <View>
-            <Text style={styles.textfield}>User: {playlistData.data?.items[0]?.owner?.display_name}</Text>
             <FlatList style={styles.flatlistContainer}
               keyExtractor={(item) => item.id}
               data={playlistData.data?.items}
@@ -64,7 +85,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
 }
 
 const styles = StyleSheet.create({
-    inputContainer: {
+    Container: {
       display: "flex",
       flexDirection: "column",
       alignItems: 'center',
@@ -72,6 +93,16 @@ const styles = StyleSheet.create({
       backgroundColor: '#121212',
       width: "100%",
       height: "100%"
+    },
+    inputContainer: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      backgroundColor: '#171717',
+      width: "100%",
+      borderRadius: "10px",
+      padding: "20px"
     },
     flatlistContainer: {
       borderRadius: 5,
@@ -88,6 +119,16 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: "#6aa84f",
       marginTop: 10
+    },
+    input:{
+      borderWidth: 1,
+      borderColor: "white",
+      borderRadius: 5,
+      padding: 8,
+      margin: 12,
+      width: 307,
+      color: "white",
+      fontFamily: 'System',
     },
     container: {
         display: "flex",

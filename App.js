@@ -20,6 +20,8 @@ export default function App() {
       global.atob = atob;
   }
 
+  //example user IDS for testing reference
+  // const userID = '12176356166'; my personal spotify
   const spotify = Credentials(); //grabs preset credentials: clientID and secret from my personal profile
   const [token, setToken] = useState('');
   const [playlistData1, setPlaylistData1] = useState('');
@@ -44,39 +46,41 @@ export default function App() {
     })
     .then(tokenResponse => {      
       setToken(tokenResponse.data.access_token); //grabs and sets token based on credentials
-      //example user IDS for testing reference
-      // const userID = '12176356166'; my personal spotify
 
-      const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, { //gets users public playlists
+      //gets users public spotify playlists
+      const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, { 
         method: 'GET',
         headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
       })
-      .then (playlistRaw => {      
+      .then(playlistRaw => {      
         setUserPlaylistData(playlistRaw);
       }).catch(err => {
         console.log("setplaylist error");
         console.log(err);
+        setUserPlaylistData("error"); //need to set something here to prevent lack of update in flatlist
       });
-      
+
+      //get profile info based on a spotify username
+      const getUserProfile = (userID) => axios(`https://api.spotify.com/v1/users/${userID}`, { 
+        method: 'GET',
+        headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
+      })
+      .then(profileRaw => {
+        console.log(profileRaw);
+      }).catch(err => {
+        console.log("profpic error");
+        console.log(err);
+      })
       //run usergrab for both usernames
       usergrab(username1, setPlaylistData1);
+      getUserProfile(username1);
       usergrab(username2, setPlaylistData2);
       })
       .catch(err => {
         console.log("gettoken error");
         console.log(err);
       });
-      console.log("token")
-      console.log(token)
   },[username1, username2]); //updates everytime username changes
-
-  function HomeScreen() {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-      </View>
-    );
-  }
 
   const Stack = createNativeStackNavigator(); //stacknavigator instance
 
