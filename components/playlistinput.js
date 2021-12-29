@@ -6,9 +6,10 @@ import axios from 'axios';
 import {Dimensions} from 'react-native';
 
 
-const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
+const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage, profPicUri}) => {
 
   const [message, setMessage] = useState('');
+  const [iconVisibility, setIconVisibility] = useState(true);
   let songlistLocal = [];
 
 
@@ -42,9 +43,16 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
-            {!(playlistData.data?.items[0] === undefined) ? <Text style={styles.textfield}>{playlistData.data?.items[0]?.owner?.display_name}</Text> : <Text style={styles.textfield}>{message}</Text>}
+            <View style = {styles.profInfoContainer}>
+              {/* userprofile image */}
+              <Image
+                style={{width: 60, height: 60, borderRadius: 30, marginRight: 20}}
+                source = {{uri: profPicUri}}
+              />
+              {!(playlistData.data?.items[0] === undefined) ? <Text style={styles.usernameTextField}>{playlistData.data?.items[0]?.owner?.display_name}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
+            </View>
             <View style={styles.searchSection}>
-              <Ionicons style={styles.searchIcon} name="ios-search" size={20} color="white"/>
+              {iconVisibility && <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>}
               <TextInput 
               style={styles.input}
               placeholder='Enter Spotify Username'
@@ -65,7 +73,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                     source = {{uri: item.images[0]?.url}}
                   />
                   <View style={styles.itemtextContainer}>
-                    <Text style={styles.textfieldItem}>{item.name}</Text>
+                    <Text style={styles.textfield}>{item.name}</Text>
                   </View>
                 </TouchableOpacity>
               )}
@@ -80,25 +88,34 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
 }
 
 const styles = StyleSheet.create({
-    Container: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      flex: 1,
-      backgroundColor: '#121212',
-      width: "100%",
-      height: "100%"
-    },
-    searchSection: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#171717',
-      borderWidth: 1,
-      borderColor: "white",
-      borderRadius: 5,
+  Container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 1,
+    backgroundColor: '#121212',
+    width: "100%",
+    height: "100%"
+  },
+  profInfoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+    marginTop: 50,
+  },
+  searchSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#171717',
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 5,
+    height: "30%",
+    marginTop: 20
   },
   searchIcon: {
       padding: 10,
@@ -107,11 +124,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-evenly',
     backgroundColor: '#171717',
+    height:"30%",
     width: "100%",
-    borderRadius: "10px",
-    padding: "20px"
+    borderRadius: 10,
+    padding: 20,
+
   },
   flatlistContainer: {
     flex: 1,
@@ -120,7 +139,7 @@ const styles = StyleSheet.create({
   flatlist: {
     borderRadius: 5,
     padding: 8,
-    maxHeight: 400,
+    maxHeight: 600,
     width: "100%",
     backgroundColor: '#121212',
     flex: 1,
@@ -129,37 +148,34 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     padding: 10,
-    borderWidth: 1,
-    borderColor: "#777",
-    borderRadius: 5,
-    backgroundColor: "#6aa84f",
     marginTop: 10
   },
   input:{
+    flex: 1,
     borderWidth: 1,
     borderColor: "#171717",
     width: 307,
     color: "white",
     fontFamily: 'System',
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 5,
   },
   itemtextContainer: {
       display:"flex",
       alignItems: "center",
       justifyContent: "center",
-      borderWidth: 1,
-      borderColor:"white",
+  },
+  usernameTextField: {
+    fontFamily: 'AvenirNext-Bold',
+    fontSize: 30,
+    color: "white",
   },
   textfield:{
       color:"white",
       fontFamily: 'System',
       textAlign: "center"
   },
-  textfieldItem:{
-      color:"white",
-      fontFamily: 'System',
-      fontSize: 10,
-      textAlign: "center"
-  }
 });
 
 export default Playlistinput

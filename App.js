@@ -30,6 +30,8 @@ export default function App() {
   const [username2, setUsername2] = useState('');  
   const [chosenPlaylist1, setChosenPlaylist1] = useState();
   const [chosenPlaylist2, setChosenPlaylist2] = useState();
+  const [userPicture1, setUserPicture1] = useState();
+  const [userPicture2, setUserPicture2] = useState();
 
   const [songlist1, setSonglist1] = useState();
   const [songlist2, setSonglist2] = useState();
@@ -61,19 +63,22 @@ export default function App() {
       });
 
       //get profile info based on a spotify username
-      const getUserProfile = (userID) => axios(`https://api.spotify.com/v1/users/${userID}`, { 
+      const getUserProfile = (userID, setUserPicture) => axios(`https://api.spotify.com/v1/users/${userID}`, { 
         method: 'GET',
         headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
       })
       .then(profileRaw => {
-        console.log(profileRaw);
+        setUserPicture(profileRaw.data?.images[0].url);
+        console.log(profileRaw.data?.images[0]?.url)
       }).catch(err => {
         console.log("profpic error");
         console.log(err);
-      })
+        setUserPicture("");
+      });
+
       //run usergrab for both usernames
       usergrab(username1, setPlaylistData1);
-      getUserProfile(username1);
+      getUserProfile(username1, setUserPicture1);
       usergrab(username2, setPlaylistData2);
       })
       .catch(err => {
@@ -93,11 +98,11 @@ export default function App() {
       >
         {/*first playlist input entry*/}
         <Stack.Screen name="Enter Spotify Username!">
-          {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry"/>}
+          {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry" profPicUri = {userPicture1}/>}
         </Stack.Screen>
         {/*second playlist input entry*/}
         <Stack.Screen name="secondEntry">
-          {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage"/>}
+          {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage" profPicUri = {userPicture2}/>}
         </Stack.Screen>
         {/*Results Page*/}
         <Stack.Screen name="resultPage">
