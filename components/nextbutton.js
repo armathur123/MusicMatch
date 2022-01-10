@@ -1,10 +1,15 @@
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 
 const NextButton = ({navigation, navPage}) => {
     return (
         <View style={styles.container}>
+            <CircularProgress
+              radius={90}
+              value={80}
+              />
             <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
               <Text style={styles.text}>Confirm</Text>
             </TouchableOpacity>
