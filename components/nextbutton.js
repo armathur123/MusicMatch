@@ -6,20 +6,19 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 const NextButton = ({navigation, navPage, loadingStatus, songlist}) => {
     return (
         <View style={styles.container}>
-            {songlist != undefined && <View>
-              {loadingStatus && <CircularProgress
-                radius={30}
-                value={100}
-                activeStrokeWidth={5}
-                activeStrokeColor='red'
-                inActiveStrokeWidth={25}
-                inActiveStrokeOpacity={.2}
-                showProgressValue={false}
-                />}
-              <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
-                <Text style={styles.text}>Confirm</Text>
-              </TouchableOpacity>
-            </View>}
+            {loadingStatus && <CircularProgress
+              radius={30}
+              value={100}
+              activeStrokeWidth={5}
+              activeStrokeColor='red'
+              inActiveStrokeWidth={25}
+              inActiveStrokeOpacity={.2}
+              showProgressValue={false}
+              />}
+            {songlist != undefined && 
+            <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
+              <Text style={styles.text}>Confirm</Text>
+            </TouchableOpacity>}
         </View>
     );
 }
