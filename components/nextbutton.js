@@ -2,25 +2,32 @@ import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 
 
-const NextButton = ({innerText, navigation, navPage}) => {
+const NextButton = ({navigation, navPage}) => {
     return (
-        <View>
+        <View style={styles.container}>
             <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
-              <Text style={styles.text}>{innerText}</Text>
+              <Text style={styles.text}>Confirm</Text>
             </TouchableOpacity>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    marginTop: 10,
+  container: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    paddingBottom: 25,
+  },
+  button: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
     backgroundColor: "#6D1404",
     padding: 7,
     borderRadius: 5,
+    width: 100
   },
   text: {
     color: "white"

@@ -43,14 +43,14 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
-            <View style = {styles.profInfoContainer}>
+            {!(playlistData.data?.items[0] === undefined) && <View style = {styles.profInfoContainer}>
               {/* userprofile image */}
               <Image
                 style={{width: 60, height: 60, borderRadius: 30, marginRight: 20}}
                 source = {{uri: profPicUri}}
               />
               {!(playlistData.data?.items[0] === undefined) ? <Text style={styles.usernameTextField}>{playlistData.data?.items[0]?.owner?.display_name}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
-            </View>
+            </View>}
             <View style={styles.searchSection}>
               {iconVisibility && <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>}
               <TextInput 
@@ -69,7 +69,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
               renderItem={({item}) => (
                 <TouchableOpacity onPress={() => playlistPressHandler(item, setChosenPlaylist, setSonglist)}  style = {styles.playlistItem}>
                   <Image
-                    style={{width: 40, height: 40}}
+                    style={{width: 50, height: 50}}
                     source = {{uri: item.images[0]?.url}}
                   />
                   <View style={styles.itemtextContainer}>
@@ -78,9 +78,6 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 </TouchableOpacity>
               )}
             />
-            <View>
-                <Text style={styles.textfield}>{chosenPlaylist}</Text>
-            </View>
             {!(songlist === undefined) && <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage}></NextButton>}
           </View>}
         </View>
@@ -97,6 +94,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#121212',
     width: "100%",
     height: "100%"
+  },
+  inputContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#171717',
+    height:"25%",
+    width: "100%",
+    borderRadius: 10,
+    padding: 15,
   },
   profInfoContainer: {
     display: "flex",
@@ -118,19 +126,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   searchIcon: {
-      padding: 10,
-  },
-  inputContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    backgroundColor: '#171717',
-    height:"30%",
-    width: "100%",
-    borderRadius: 10,
-    padding: 20,
-
+    padding: 10,
   },
   flatlistContainer: {
     flex: 1,
@@ -139,8 +135,6 @@ const styles = StyleSheet.create({
   flatlist: {
     borderRadius: 5,
     padding: 8,
-    maxHeight: 600,
-    width: "100%",
     backgroundColor: '#121212',
     flex: 1,
   },
@@ -152,8 +146,6 @@ const styles = StyleSheet.create({
   },
   input:{
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#171717",
     width: 307,
     color: "white",
     fontFamily: 'System',
@@ -162,9 +154,10 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   itemtextContainer: {
-      display:"flex",
-      alignItems: "center",
-      justifyContent: "center",
+    display:"flex",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingLeft: 15
   },
   usernameTextField: {
     fontFamily: 'AvenirNext-Bold',
@@ -172,9 +165,10 @@ const styles = StyleSheet.create({
     color: "white",
   },
   textfield:{
-      color:"white",
-      fontFamily: 'System',
-      textAlign: "center"
+    color:"white",
+    fontFamily: 'System',
+    letterSpacing: .6,
+    fontSize: 14,
   },
 });
 
