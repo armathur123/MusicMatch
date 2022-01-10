@@ -3,16 +3,23 @@ import React from 'react';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 
-const NextButton = ({navigation, navPage}) => {
+const NextButton = ({navigation, navPage, loadingStatus, songlist}) => {
     return (
         <View style={styles.container}>
-            <CircularProgress
-              radius={90}
-              value={80}
-              />
-            <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
-              <Text style={styles.text}>Confirm</Text>
-            </TouchableOpacity>
+            {songlist != undefined && <View>
+              {loadingStatus && <CircularProgress
+                radius={30}
+                value={100}
+                activeStrokeWidth={5}
+                activeStrokeColor='red'
+                inActiveStrokeWidth={25}
+                inActiveStrokeOpacity={.2}
+                showProgressValue={false}
+                />}
+              <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
+                <Text style={styles.text}>Confirm</Text>
+              </TouchableOpacity>
+            </View>}
         </View>
     );
 }

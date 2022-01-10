@@ -10,6 +10,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
 
   const [message, setMessage] = useState('');
   const [iconVisibility, setIconVisibility] = useState(true);
+  const [loadingStatus, setLoadingStatus] = useState(false);
   let songlistLocal = [];
 
 
@@ -38,6 +39,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
     const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
       setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
       getSongs(token, playlistData.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
+      setLoadingStatus(false);
     }
 
     return ( 
@@ -58,7 +60,9 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
               placeholder='Enter Spotify Username'
               placeholderTextColor="white"
               underlineColorAndroid="transparent"
-              onChangeText={(val) => setUsername(val.trim())}/>
+              onChangeText={(val) => {
+                  setUsername(val.trim());
+                }}/>
             </View> 
           </View>
           {!(playlistData.data?.items[0] === undefined) && 
@@ -67,7 +71,13 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
               keyExtractor={(item) => item.id}
               data={playlistData.data?.items}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={() => playlistPressHandler(item, setChosenPlaylist, setSonglist)}  style = {styles.playlistItem}>
+                <TouchableOpacity 
+                  onPress={() => {
+                    setSonglist(undefined);
+                    playlistPressHandler(item, setChosenPlaylist, setSonglist);
+                    setLoadingStatus(true);
+                  }}  
+                  style = {styles.playlistItem}>
                   <Image
                     style={{width: 50, height: 50}}
                     source = {{uri: item.images[0]?.url}}
@@ -78,7 +88,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 </TouchableOpacity>
               )}
             />
-            {!(songlist === undefined) && <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage}></NextButton>}
+            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} loadingStatus={loadingStatus} songlist={songlist}></NextButton>
           </View>}
         </View>
      );
@@ -90,7 +100,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: 'center',
     justifyContent: 'flex-start',
-    flex: 1,
     backgroundColor: '#121212',
     width: "100%",
     height: "100%"
@@ -101,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     backgroundColor: '#171717',
-    height:"25%",
+    height:"22%",
     width: "100%",
     borderRadius: 10,
     padding: 15,
