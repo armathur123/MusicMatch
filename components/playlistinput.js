@@ -4,6 +4,8 @@ import React, {useState, useEffect} from 'react';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 import {Dimensions} from 'react-native';
+import {usePromiseTracker} from "react-promise-tracker";
+import {trackPromise} from 'react-promise-tracker';
 
 
 const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage, profPicUri}) => {
@@ -12,7 +14,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
   const [iconVisibility, setIconVisibility] = useState(true);
   const [loadingStatus, setLoadingStatus] = useState(false);
   let songlistLocal = [];
-
+  const {getSongsInProgress} = usePromiseTracker();
 
   const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
     method: 'GET',
@@ -38,8 +40,8 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
 
     const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
       setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
-      getSongs(token, playlistData.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
-      setLoadingStatus(false);
+      trackPromise(getSongs(token, playlistData.id, setSonglist, 0, 0, 0)); //current count, total, and offset start at 0
+      setLoadingStatus(false); //after songlist is full, loading status can be set to false
     }
 
     return ( 
@@ -74,8 +76,10 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 <TouchableOpacity 
                   onPress={() => {
                     setSonglist(undefined);
-                    playlistPressHandler(item, setChosenPlaylist, setSonglist);
                     setLoadingStatus(true);
+                    // playlistPressHandler(item, setChosenPlaylist, setSonglist); 
+                    getSongs(token, item.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
+                    console.log(loadingStatus);
                   }}  
                   style = {styles.playlistItem}>
                   <Image
@@ -88,7 +92,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 </TouchableOpacity>
               )}
             />
-            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} loadingStatus={loadingStatus} songlist={songlist}></NextButton>
+            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} loadingStatus={loadingStatus} songlist={songlist} getSongsInProgress ={getSongsInProgress}></NextButton>
           </View>}
         </View>
      );

@@ -1,24 +1,18 @@
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 
-const NextButton = ({navigation, navPage, loadingStatus, songlist}) => {
+const NextButton = ({navigation, navPage, songlist, getSongsInProgress}) => {
     return (
         <View style={styles.container}>
-            {loadingStatus && <CircularProgress
-              radius={30}
-              value={100}
-              activeStrokeWidth={5}
-              activeStrokeColor='red'
-              inActiveStrokeWidth={25}
-              inActiveStrokeOpacity={.2}
-              showProgressValue={false}
-              />}
-            {songlist != undefined && 
-            <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
-              <Text style={styles.text}>Confirm</Text>
-            </TouchableOpacity>}
+            {getSongsInProgress &&
+            <ActivityIndicator></ActivityIndicator>}
+            {(songlist != undefined && !getSongsInProgress) && //songlist has songs and api isnt still loading songs
+              <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
+                <Text style={styles.text}>Confirm</Text>
+              </TouchableOpacity>
+            }
         </View>
     );
 }
