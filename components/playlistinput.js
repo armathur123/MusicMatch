@@ -61,6 +61,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
               underlineColorAndroid="transparent"
               onChangeText={(val) => {
                   setUsername(val.trim());
+                  setSonglist(undefined);
                 }}/>
             </View> 
           </View>
@@ -139,6 +140,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   flatlistContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-end",
     flex: 1,
     width: Dimensions.get("window").width,
   },

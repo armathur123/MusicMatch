@@ -10,7 +10,7 @@ const NextButton = ({navigation, navPage, songlist, promiseInProgress}) => {
             <ActivityIndicator></ActivityIndicator>}
             {(songlist != undefined && !promiseInProgress) && //songlist has songs and api isnt still loading songs
               <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
-                <Text style={styles.text}>Confirm</Text>
+                <Text style={styles.text}>></Text>
               </TouchableOpacity>
             }
         </View>
@@ -21,21 +21,23 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: 25,
+    alignItems: "flex-end",
+    paddingBottom: 20,
   },
   button: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
-    backgroundColor: "#6D1404",
+    backgroundColor: "black",
     padding: 7,
-    borderRadius: 5,
-    width: 100
+    borderRadius: 30,
+    width: 35,
+    marginRight: "10%"
   },
   text: {
-    color: "white"
+    color: "white",
+    fontSize: 25
   }
 });
 
