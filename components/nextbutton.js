@@ -3,12 +3,12 @@ import React from 'react';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 
-const NextButton = ({navigation, navPage, songlist, getSongsInProgress}) => {
+const NextButton = ({navigation, navPage, songlist, promiseInProgress}) => {
     return (
         <View style={styles.container}>
-            {getSongsInProgress &&
+            {promiseInProgress ===true &&
             <ActivityIndicator></ActivityIndicator>}
-            {(songlist != undefined && !getSongsInProgress) && //songlist has songs and api isnt still loading songs
+            {(songlist != undefined && !promiseInProgress) && //songlist has songs and api isnt still loading songs
               <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
                 <Text style={styles.text}>Confirm</Text>
               </TouchableOpacity>

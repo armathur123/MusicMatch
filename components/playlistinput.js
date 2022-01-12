@@ -14,36 +14,33 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
   const [iconVisibility, setIconVisibility] = useState(true);
   const [loadingStatus, setLoadingStatus] = useState(false);
   let songlistLocal = [];
-  const {getSongsInProgress} = usePromiseTracker();
+  const {promiseInProgress} = usePromiseTracker();
 
-  const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
-    method: 'GET',
-    headers: { 'Authorization' : 'Bearer ' + token}
-  })
-  .then (songsRaw => {
-    total = songsRaw?.data?.total; //set total number of songs (api iterations)
-    let count = songsRaw?.data?.items.length;
-    currentCount += count; //set current songcount
-    songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
-    if (currentCount < total){ //recursively calls until entire playlist has been gotten
-      getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
-    }
-    else { //all songs have been caught, sets songlist
-      console.log(songlistLocal);
-      setSongList(songlistLocal);
-    }
-  })
-  .catch(err => {
-    console.log("getsongs error");
-    console.log(err);
-  });
-
-    const playlistPressHandler = (playlistData, setPlaylist, setSonglist) => {
-      setPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
-      trackPromise(getSongs(token, playlistData.id, setSonglist, 0, 0, 0)); //current count, total, and offset start at 0
-      setLoadingStatus(false); //after songlist is full, loading status can be set to false
-    }
-
+  const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => {
+    const request = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
+      method: 'GET',
+      headers: { 'Authorization' : 'Bearer ' + token}
+    });
+    trackPromise(request
+      .then (songsRaw => {
+        total = songsRaw?.data?.total; //set total number of songs (api iterations)
+        let count = songsRaw?.data?.items.length;
+        currentCount += count; //set current songcount
+        songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
+        if (currentCount < total){ //recursively calls until entire playlist has been gotten
+          getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
+        }
+        else { //all songs have been caught, sets songlist
+          console.log(songlistLocal);
+          setSongList(songlistLocal);
+          return request;
+        }
+      })
+      .catch(err => {
+        console.log("getsongs error");
+        console.log(err);
+      }));
+  }
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
@@ -92,7 +89,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 </TouchableOpacity>
               )}
             />
-            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} loadingStatus={loadingStatus} songlist={songlist} getSongsInProgress ={getSongsInProgress}></NextButton>
+            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} loadingStatus={loadingStatus} songlist={songlist} promiseInProgress ={promiseInProgress}></NextButton>
           </View>}
         </View>
      );
