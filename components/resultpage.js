@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} f
 import React, {useState, useEffect} from 'react';
 import CameraComp from '../components/camera';
 
-const ResultPage = ({songlist1, songlist2}) => {
+const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
     
     let songCount = 0;
     let commonSongLocal = []

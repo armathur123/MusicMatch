@@ -14,18 +14,17 @@ const NextButton = ({navigation, navPage, songlist, promiseInProgress}) => {
                 <AnimatedLoader
                   visible={true}
                   overlayColor="rgba(0, 0, 0,0.5)"
+                  animationType="fade"
                   source={require("./loader-animation.json")} 
                   animationStyle={styles.loader}
                   speed={1}
                 />
                 {/* https://lottiefiles.com/69922-loader-animation credit to Syed Haider Ali */}
-              </TouchableOpacity>
-            }
+              </TouchableOpacity>}
             {(songlist != undefined && !promiseInProgress) && //songlist has songs and api isnt still loading songs
               <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
                 <Icon name='chevron-right' size={75} color="white" />
-              </TouchableOpacity>
-            }
+              </TouchableOpacity>}
         </View>
     );
 }
@@ -33,7 +32,7 @@ const NextButton = ({navigation, navPage, songlist, promiseInProgress}) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    right: 7,
+    right: 5,
     bottom: 7,
     paddingBottom: 20,
   },

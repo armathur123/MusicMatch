@@ -76,10 +76,11 @@ export default function App() {
         setUserPicture("");
       });
 
-      //run usergrab for both usernames
+      //get playlist data and set userpicture for both profiles
       usergrab(username1, setPlaylistData1);
       getUserProfile(username1, setUserPicture1);
       usergrab(username2, setPlaylistData2);
+      getUserProfile(username2, setUserPicture2);
       })
       .catch(err => {
         console.log("gettoken error");
@@ -106,7 +107,7 @@ export default function App() {
         </Stack.Screen>
         {/*Results Page*/}
         <Stack.Screen name="resultPage">
-          {props => <ResultPage {...props} songlist1 = {songlist1} songlist2 = {songlist2}/>}
+          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} userpic1={userPicture1} userpic2 = {userPicture2} songlist1 = {songlist1} songlist2 = {songlist2}/>}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
