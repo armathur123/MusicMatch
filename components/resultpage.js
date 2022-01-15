@@ -26,9 +26,7 @@ const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName
     commonSongCatcher();
 
     return (
-        <View styles = {styles.container}>
-            {startCam ?
-            <CameraComp toggleStart = {setStartCam} setImageURI={setImageURI}></CameraComp> :     
+        <View styles = {styles.container}>   
             <View style = {styles.inputContainer}>        
                 <Text style = {styles.textfield}>Results</Text>
                 <Text style = {styles.commonSongCount}>{songCount}</Text>
@@ -54,7 +52,7 @@ const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName
                         <TouchableOpacity style={styles.startCamera} onPress={startCamHandler}><Text style={{color: "white"}}>Take picture</Text></TouchableOpacity>
                     </View>
                 </View>
-            </View>}
+            </View>
         </View>
     );
 }
