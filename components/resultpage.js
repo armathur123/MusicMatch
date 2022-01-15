@@ -1,17 +1,15 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import CameraComp from '../components/camera';
+import BasicInfo from '../components/basicInfo';
 
-const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
-    
+
+const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
+
+    let displayName1 = playlistData1.data?.items[0]?.owner?.display_name;
+    let displayName2 = playlistData2.data?.items[0]?.owner?.display_name;
     let songCount = 0;
     let commonSongLocal = []
-    const [startCam, setStartCam] = useState(false);
-    const [imageURI, setImageURI] = useState(null);
-
-    const startCamHandler = async() => {
-      setStartCam(true);
-    }
 
     const commonSongCatcher = () => { //find common songs
         for (const song1 of songlist1) {
@@ -26,32 +24,23 @@ const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName
     commonSongCatcher();
 
     return (
-        <View styles = {styles.container}>   
-            <View style = {styles.inputContainer}>        
-                <Text style = {styles.textfield}>Results</Text>
-                <Text style = {styles.commonSongCount}>{songCount}</Text>
-                <View>
-                    <FlatList style={styles.flatlistContainer}
-                    keyExtractor={(item) => item.id}
-                    data={commonSongLocal}
-                    renderItem={({item}) => (
-                        <TouchableOpacity style = {styles.playlistItem}>
-                            <Text style={styles.textfieldItem}>{item?.track?.name}</Text>
-                            <Text style={styles.textfieldItem}>{item?.track?.artists[0]?.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    />
-                </View>
-                {(imageURI !== null) &&
-                <Image
-                    style = {{height:180, width: 150}}
-                    source={{uri: imageURI && imageURI.uri}}
-                />}
-                <View style={{flex:1,flexDirection: 'column', justifyContent: 'center',alignItems: 'center'}}>
-                    <View style = {{padding:10}}>
-                        <TouchableOpacity style={styles.startCamera} onPress={startCamHandler}><Text style={{color: "white"}}>Take picture</Text></TouchableOpacity>
-                    </View>
-                </View>
+        <View style = {styles.Container}>
+            <View style={styles.basicInfoContainer}>
+                <BasicInfo displayName={displayName1} userpic={userpic1} chosenPlaylistName={chosenPlaylistName1}/>
+                <BasicInfo displayName={displayName2} userpic={userpic2} chosenPlaylistName={chosenPlaylistName2}/>
+            </View>        
+            <Text style = {styles.commonSongCount}>{songCount}</Text>
+            <View>
+                <FlatList style={styles.flatlistContainer}
+                keyExtractor={(item) => item.id}
+                data={commonSongLocal}
+                renderItem={({item}) => (
+                    <TouchableOpacity style = {styles.playlistItem}>
+                        <Text style={styles.textfieldItem}>{item?.track?.name}</Text>
+                        <Text style={styles.textfieldItem}>{item?.track?.artists[0]?.name}</Text>
+                    </TouchableOpacity>
+                )}
+                />
             </View>
         </View>
     );
@@ -59,17 +48,21 @@ const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        height: "100%",
-    },
-    inputContainer: {
+    Container: {
       display: "flex",
       flexDirection: "column",
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'space-around',
       width: "100%",
-      height: "100%"
+      height: "100%",
+      backgroundColor: '#121212',
+    },
+    basicInfoContainer: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        width: "100%"
     },
     flatlistContainer: {
       borderRadius: 5,
@@ -88,11 +81,6 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       backgroundColor: "#6aa84f",
       marginTop: 10
-    },
-    container: {
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
     },
     textfield:{
         fontFamily: 'System',

@@ -76,9 +76,8 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                     setSonglist(undefined);
                     setLoadingStatus(true);
                     // playlistPressHandler(item, setChosenPlaylist, setSonglist); 
-                    setChosenPlaylist(playlistData.name + " Number of Tracks:" + playlistData?.tracks?.total);
+                    setChosenPlaylist(item.name);
                     getSongs(token, item.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
-                    console.log(loadingStatus);
                   }}  
                   style = {styles.playlistItem}>
                   <Image

@@ -28,8 +28,8 @@ export default function App() {
   const [playlistData2, setPlaylistData2] = useState('');
   const [username1, setUsername1] = useState('');  
   const [username2, setUsername2] = useState('');  
-  const [chosenPlaylist1, setChosenPlaylist1] = useState();
-  const [chosenPlaylist2, setChosenPlaylist2] = useState();
+  const [chosenPlaylist1, setChosenPlaylist1] = useState('');
+  const [chosenPlaylist2, setChosenPlaylist2] = useState('');
   const [userPicture1, setUserPicture1] = useState();
   const [userPicture2, setUserPicture2] = useState();
 
@@ -107,7 +107,7 @@ export default function App() {
         </Stack.Screen>
         {/*Results Page*/}
         <Stack.Screen name="resultPage">
-          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} userpic1={userPicture1} userpic2 = {userPicture2} songlist1 = {songlist1} songlist2 = {songlist2}/>}
+          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} playlistData1={playlistData1} playlistData2={playlistData2} userpic1={userPicture1} userpic2 = {userPicture2} songlist1 = {songlist1} songlist2 = {songlist2}/>}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
