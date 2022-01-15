@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} f
 import React, {useState, useEffect} from 'react';
 import CameraComp from '../components/camera';
 
-const ResultPage = ({songlist1, songlist2}) => {
+const ResultPage = ({userpic1, userpic2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
     
     let songCount = 0;
     let commonSongLocal = []
@@ -26,9 +26,7 @@ const ResultPage = ({songlist1, songlist2}) => {
     commonSongCatcher();
 
     return (
-        <View styles = {styles.container}>
-            {startCam ?
-            <CameraComp toggleStart = {setStartCam} setImageURI={setImageURI}></CameraComp> :     
+        <View styles = {styles.container}>   
             <View style = {styles.inputContainer}>        
                 <Text style = {styles.textfield}>Results</Text>
                 <Text style = {styles.commonSongCount}>{songCount}</Text>
@@ -54,7 +52,7 @@ const ResultPage = ({songlist1, songlist2}) => {
                         <TouchableOpacity style={styles.startCamera} onPress={startCamHandler}><Text style={{color: "white"}}>Take picture</Text></TouchableOpacity>
                     </View>
                 </View>
-            </View>}
+            </View>
         </View>
     );
 }
