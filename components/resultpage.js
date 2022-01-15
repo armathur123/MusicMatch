@@ -25,8 +25,16 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
 
     return (
         <View style = {styles.Container}>
+            <View style={{display:"flex", alignItems: "flex-start", justifyContent:"center", width: "100%", paddingLeft: 10,marginTop: 55, marginBottom: 35,}}>
+                <Text style={{color:"white", fontSize: 30, color: "#e6e6e6"}}>MusicMatch</Text>
+            </View>
             <View style={styles.basicInfoContainer}>
                 <BasicInfo displayName={displayName1} userpic={userpic1} chosenPlaylistName={chosenPlaylistName1}/>
+                <View styles={{display:"flex", flexDirection: "column"}}>
+                    <View style={{width: 7, height: 7, borderRadius: 4, backgroundColor:"white", marginTop: 10, marginBottom: 10}}></View>
+                    <View style={{width: 7, height: 7, borderRadius: 4, backgroundColor:"white", marginTop: 10, marginBottom: 10}}></View>
+                    <View style={{width: 7, height: 7, borderRadius: 4, backgroundColor:"white", marginTop: 10, marginBottom: 10}}></View>
+                </View>
                 <BasicInfo displayName={displayName2} userpic={userpic2} chosenPlaylistName={chosenPlaylistName2}/>
             </View>        
             <Text style = {styles.commonSongCount}>{songCount}</Text>
@@ -36,8 +44,8 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                 data={commonSongLocal}
                 renderItem={({item}) => (
                     <TouchableOpacity style = {styles.playlistItem}>
-                        <Text style={styles.textfieldItem}>{item?.track?.name}</Text>
-                        <Text style={styles.textfieldItem}>{item?.track?.artists[0]?.name}</Text>
+                        <Text style={styles.textfield}>{item?.track?.name}</Text>
+                        <Text style={styles.textfield}>{item?.track?.artists[0]?.name}</Text>
                     </TouchableOpacity>
                 )}
                 />
@@ -52,7 +60,6 @@ const styles = StyleSheet.create({
       display: "flex",
       flexDirection: "column",
       alignItems: 'center',
-      justifyContent: 'space-around',
       width: "100%",
       height: "100%",
       backgroundColor: '#121212',
@@ -67,8 +74,9 @@ const styles = StyleSheet.create({
     flatlistContainer: {
       borderRadius: 5,
       padding: 8,
-      maxHeight: 300,
       width: 270,
+      maxHeight: "50%",
+      backgroundColor:"rgb(218,165,32)"
     },
     playlistItem: {
       display: "flex",
@@ -79,12 +87,13 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: "#777",
       borderRadius: 5,
-      backgroundColor: "#6aa84f",
+      backgroundColor: "black",
       marginTop: 10
     },
     textfield:{
         fontFamily: 'System',
-        textAlign: "center"
+        textAlign: "center",
+        color: "white"
     },
     commonSongCount:{
         fontFamily: 'System',
@@ -92,13 +101,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: "white"
     },
-    startCamera:{
-        backgroundColor: "green",
-        borderWidth: 1,
-        color: "white",
-        padding: 8,
-        borderRadius: 10,
-    }
   });
  
 export default ResultPage;
