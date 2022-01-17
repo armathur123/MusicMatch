@@ -12,6 +12,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     let commonSongLocal = []
 
     const commonSongCatcher = () => { //find common songs
+        console.log(playlistData2);
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {
                 if (song1?.track?.id == song2?.track?.id){
@@ -43,7 +44,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                 keyExtractor={(item) => item.id}
                 data={commonSongLocal}
                 renderItem={({item}) => (
-                    <TouchableOpacity style = {styles.playlistItem}>
+                    <TouchableOpacity style = {styles.resultsListItem}>
                         <Text style={styles.textfield}>{item?.track?.name}</Text>
                         <Text style={styles.textfield}>{item?.track?.artists[0]?.name}</Text>
                     </TouchableOpacity>
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
       maxHeight: "50%",
       backgroundColor:"rgb(218,165,32)"
     },
-    playlistItem: {
+    resultsListItem: {
       display: "flex",
       flexDirection: "row",
       padding: 10,

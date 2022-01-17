@@ -12,9 +12,9 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
 
   const [message, setMessage] = useState('');
   const [iconVisibility, setIconVisibility] = useState(true);
-  const [loadingStatus, setLoadingStatus] = useState(false);
   let songlistLocal = [];
   const {promiseInProgress} = usePromiseTracker();
+  const [selectedItem, setSelectedItem] = useState('')
 
   const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => {
     const request = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
@@ -74,12 +74,15 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 <TouchableOpacity 
                   onPress={() => {
                     setSonglist(undefined);
-                    setLoadingStatus(true);
                     // playlistPressHandler(item, setChosenPlaylist, setSonglist); 
                     setChosenPlaylist(item.name);
+                    setSelectedItem(item.id);
                     getSongs(token, item.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
                   }}  
-                  style = {styles.playlistItem}>
+                  style = {
+                    (item.id === selectedItem) ? 
+                    styles.playlistItemSelected : styles.playlistItem
+                    }>
                   <Image
                     style={{width: 50, height: 50}}
                     source = {{uri: item.images[0]?.url}}
@@ -90,7 +93,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                 </TouchableOpacity>
               )}
             />
-            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} loadingStatus={loadingStatus} songlist={songlist} promiseInProgress ={promiseInProgress}></NextButton>
+            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} songlist={songlist} promiseInProgress ={promiseInProgress}></NextButton>
           </View>}
         </View>
      );
@@ -154,6 +157,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     marginTop: 10
+  },
+  playlistItemSelected: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 10,
+    marginTop: 10,
+    backgroundColor: "black",
+    borderRadius: 10
   },
   input:{
     flex: 1,
