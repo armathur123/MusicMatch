@@ -31,7 +31,6 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
           getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
         }
         else { //all songs have been caught, sets songlist
-          console.log(songlistLocal);
           setSongList(songlistLocal);
           return request;
         }

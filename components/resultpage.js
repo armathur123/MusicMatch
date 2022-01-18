@@ -2,17 +2,21 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} f
 import React, {useState, useEffect} from 'react';
 import CameraComp from '../components/camera';
 import BasicInfo from '../components/basicInfo';
+import {Dimensions} from 'react-native';
+import { shadowColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+let themeColor = 'rgb(218,165,32)';
+
 
 
 const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
-
+    
     let displayName1 = playlistData1.data?.items[0]?.owner?.display_name;
     let displayName2 = playlistData2.data?.items[0]?.owner?.display_name;
     let songCount = 0;
-    let commonSongLocal = []
+    let commonSongLocal = [];
+
 
     const commonSongCatcher = () => { //find common songs
-        console.log(playlistData2);
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {
                 if (song1?.track?.id == song2?.track?.id){
@@ -21,32 +25,38 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                 }
             }
         }
+        // console.log(commonSongLocal[0].track?.album?.images[0]?.url);
     }
     commonSongCatcher();
 
     return (
         <View style = {styles.Container}>
             <View style={{display:"flex", alignItems: "flex-start", justifyContent:"center", width: "100%", paddingLeft: 10,marginTop: 55, marginBottom: 35,}}>
-                <Text style={{color:"white", fontSize: 30, color: "#e6e6e6"}}>MusicMatch</Text>
+                <Text style={{color:"white", fontSize: 40, color: "#e6e6e6"}}>MusicMatch</Text>
             </View>
             <View style={styles.basicInfoContainer}>
                 <BasicInfo displayName={displayName1} userpic={userpic1} chosenPlaylistName={chosenPlaylistName1}/>
-                <View styles={{display:"flex", flexDirection: "column"}}>
-                    <View style={{width: 7, height: 7, borderRadius: 4, backgroundColor:"white", marginTop: 10, marginBottom: 10}}></View>
-                    <View style={{width: 7, height: 7, borderRadius: 4, backgroundColor:"white", marginTop: 10, marginBottom: 10}}></View>
-                    <View style={{width: 7, height: 7, borderRadius: 4, backgroundColor:"white", marginTop: 10, marginBottom: 10}}></View>
-                </View>
                 <BasicInfo displayName={displayName2} userpic={userpic2} chosenPlaylistName={chosenPlaylistName2}/>
-            </View>        
-            <Text style = {styles.commonSongCount}>{songCount}</Text>
+            </View>     
+            <View style={{display: "flex", flexDirection:"row", justifyContent: "space-between", width: "100%", padding: 10,marginTop:10}}>   
+                <Text style={{color:"white"}}>Common Song Count: </Text>
+                <Text style = {{color:"white"}}>{songCount}</Text>
+            </View>
             <View>
                 <FlatList style={styles.flatlistContainer}
                 keyExtractor={(item) => item.id}
                 data={commonSongLocal}
+                horizontal={true}
                 renderItem={({item}) => (
                     <TouchableOpacity style = {styles.resultsListItem}>
-                        <Text style={styles.textfield}>{item?.track?.name}</Text>
-                        <Text style={styles.textfield}>{item?.track?.artists[0]?.name}</Text>
+                        <Image
+                            style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
+                            source = {{uri: item.track?.album?.images[0]?.url}}
+                        />  
+                        <View>
+                            <Text style={{color:"white", fontSize: 22}}>{item?.track?.name}</Text>
+                            <Text style={{color:"white", fontSize: 12}}>{item?.track?.artists[0]?.name}</Text>
+                        </View>
                     </TouchableOpacity>
                 )}
                 />
@@ -70,37 +80,43 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        width: "100%"
+        width: "100%",
+        marginTop: 20,
     },
     flatlistContainer: {
-      borderRadius: 5,
       padding: 8,
-      width: 270,
-      maxHeight: "50%",
-      backgroundColor:"rgb(218,165,32)"
+      width: Dimensions.get("window").width,
+      maxHeight: "38%",
     },
     resultsListItem: {
       display: "flex",
       flexDirection: "row",
       padding: 10,
       alignItems: "center",
-      justifyContent: "space-between",
-      borderWidth: 1,
-      borderColor: "#777",
-      borderRadius: 5,
+      justifyContent: 'flex-start',
+      width:Dimensions.get("window").width - 20,
+      maxWidth:Dimensions.get("window").width - 20,
       backgroundColor: "black",
-      marginTop: 10
+      borderRadius: 20,
+      margin: 10,
+      shadowColor: "black",
+      shadowOffset: {
+          width:-3,
+          height: 3
+      }, 
+      shadowOpacity: 1,
+      shadowRadius: 8
     },
     textfield:{
         fontFamily: 'System',
         textAlign: "center",
-        color: "white"
+        color: "white",
     },
     commonSongCount:{
         fontFamily: 'System',
         textAlign: "center",
         borderRadius: 10,
-        borderColor: "white"
+        color: "white"
     },
   });
  

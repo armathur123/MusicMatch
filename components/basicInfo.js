@@ -8,7 +8,7 @@ const BasicInfo = ({displayName, userpic, chosenPlaylistName}) => {
     return (
         <View style={styles.container}>
             <Image
-                style={{width: 70, height: 70, borderRadius: 45, position: 'absolute', top: -23}}
+                style={{width: 70, height: 70, borderRadius: 40, position: 'absolute', top: -23}}
                 source = {{uri: userpic}}
             />
             <View style={styles.row}>
@@ -26,8 +26,17 @@ const styles = StyleSheet.create({
       alignItems:"center",
       justifyContent: "center",
       borderRadius: 10,
-      backgroundColor: "rgb(218,165,32)",
       paddingBottom: 10,
+      backgroundColor: "black",
+      borderWidth:1,
+      borderColor:'black',
+      shadowColor: "black",
+      shadowOffset: {
+          width:-3,
+          height: 3
+      }, 
+      shadowOpacity: 1,
+      shadowRadius: 8
   },
   row: {
     display:"flex",
@@ -39,12 +48,12 @@ const styles = StyleSheet.create({
   },
   displayName: {
     marginTop:30,
-    color: "black",
+    color: "white",
     fontSize: 20,
   },
   playlistName: {
     marginTop:12,
-    color: "black",
+    color: "white",
     fontSize: 12
   }
 });
