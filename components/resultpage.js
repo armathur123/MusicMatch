@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
+import { Animated, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import CameraComp from '../components/camera';
 import BasicInfo from '../components/basicInfo';
@@ -13,7 +13,10 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     let displayName1 = playlistData1.data?.items[0]?.owner?.display_name;
     let displayName2 = playlistData2.data?.items[0]?.owner?.display_name;
     let songCount = 0;
-    let commonSongLocal = [];
+    let commonSongLocal = []; //consider making this a useRef
+
+    //variables for animating flatlist
+    const ITEM_SIZE = Dimensions.get("window").width - 20;
 
 
     const commonSongCatcher = () => { //find common songs
@@ -29,6 +32,8 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     }
     commonSongCatcher();
 
+    const scrollY = React.useRef(new Animated.Value(0)).current;
+
     return (
         <View style = {styles.Container}>
             <View style={{display:"flex", alignItems: "flex-start", justifyContent:"center", width: "100%", paddingLeft: 10,marginTop: 55, marginBottom: 35,}}>
@@ -43,22 +48,33 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                 <Text style = {{color:"white"}}>{songCount}</Text>
             </View>
             <View>
-                <FlatList style={styles.flatlistContainer}
+                <Animated.FlatList style={styles.flatlistContainer}
                 keyExtractor={(item) => item.id}
                 data={commonSongLocal}
-                horizontal={true}
-                renderItem={({item}) => (
-                    <TouchableOpacity style = {styles.resultsListItem}>
-                        <Image
-                            style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
-                            source = {{uri: item.track?.album?.images[0]?.url}}
-                        />  
-                        <View>
-                            <Text style={{color:"white", fontSize: 22}}>{item?.track?.name}</Text>
-                            <Text style={{color:"white", fontSize: 12}}>{item?.track?.artists[0]?.name}</Text>
-                        </View>
-                    </TouchableOpacity>
+                onScroll={Animated.event(
+                    [{nativeEvent:{contentOffset: {y: scrollY}}}],
+                    {useNativeDriver: true},
                 )}
+                horizontal={true}
+                renderItem={({item, index}) => {
+                    const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1)]
+                    const scale = scrollY.interpolate({
+                        inputRange,
+                        outputRange: [1, 1, 1, 0]
+                    });
+
+                    return <Animated.View style ={{transform: scale}}>
+                                <TouchableOpacity style = {styles.resultsListItem}>
+                                    <Image
+                                        style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
+                                        source = {{uri: item.track?.album?.images[0]?.url}}
+                                    />  
+                                    <View>
+                                        <Text style={{color:"white", fontSize: 22}}>{item?.track?.name}</Text>
+                                        <Text style={{color:"white", fontSize: 12}}>{item?.track?.artists[0]?.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </Animated.View>}}
                 />
             </View>
         </View>
@@ -105,7 +121,7 @@ const styles = StyleSheet.create({
           height: 3
       }, 
       shadowOpacity: 1,
-      shadowRadius: 8
+      shadowRadius: 8,
     },
     textfield:{
         fontFamily: 'System',
