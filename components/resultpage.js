@@ -16,8 +16,8 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     let commonSongLocal = []; //consider making this a useRef
 
     //variables for animating flatlist
-    const ITEM_SIZE = Dimensions.get("window").width - 20;
-
+    const ITEM_SIZE = Dimensions.get("window").width - 60;
+    const scrollX = React.useRef(new Animated.Value(0)).current;
 
     const commonSongCatcher = () => { //find common songs
         for (const song1 of songlist1) {
@@ -32,7 +32,6 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     }
     commonSongCatcher();
 
-    const scrollY = React.useRef(new Animated.Value(0)).current;
 
     return (
         <View style = {styles.Container}>
@@ -51,19 +50,19 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                 <Animated.FlatList style={styles.flatlistContainer}
                 keyExtractor={(item) => item.id}
                 data={commonSongLocal}
+                horizontal={true}
                 onScroll={Animated.event(
-                    [{nativeEvent:{contentOffset: {y: scrollY}}}],
+                    [{nativeEvent:{contentOffset: {x: scrollX}}}],
                     {useNativeDriver: true},
                 )}
-                horizontal={true}
                 renderItem={({item, index}) => {
-                    const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1)]
-                    const scale = scrollY.interpolate({
+                    const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+6)]
+                    const scale = scrollX.interpolate({
                         inputRange,
-                        outputRange: [1, 1, 1, 0]
+                        outputRange: [1, 1, 1, 0],
                     });
 
-                    return <Animated.View style ={{transform: scale}}>
+                    return <Animated.View style={{transform: [{scale}]}}>
                                 <TouchableOpacity style = {styles.resultsListItem}>
                                     <Image
                                         style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
@@ -110,8 +109,8 @@ const styles = StyleSheet.create({
       padding: 10,
       alignItems: "center",
       justifyContent: 'flex-start',
-      width:Dimensions.get("window").width - 20,
-      maxWidth:Dimensions.get("window").width - 20,
+      width:Dimensions.get("window").width - 70,
+      maxWidth:Dimensions.get("window").width - 70,
       backgroundColor: "black",
       borderRadius: 20,
       margin: 10,
