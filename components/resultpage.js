@@ -16,7 +16,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     let commonSongLocal = []; //consider making this a useRef
 
     //variables for animating flatlist
-    const ITEM_SIZE = Dimensions.get("window").width-90 + 20;
+    const ITEM_SIZE = Dimensions.get("window").width-70 + 20;
     const scrollX = React.useRef(new Animated.Value(0)).current;
 
     const commonSongCatcher = () => { //find common songs
@@ -69,8 +69,8 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                     });
 
                     return <Animated.View style = {{
-                                width:Dimensions.get("window").width - 90,
-                                maxWidth:Dimensions.get("window").width - 90,
+                                width:Dimensions.get("window").width - 70,
+                                maxWidth:Dimensions.get("window").width - 70,
                                 backgroundColor: "black",
                                 borderRadius: 20,
                                 margin: 10,
@@ -82,7 +82,6 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                                 shadowOpacity: 1,
                                 shadowRadius: 8,
                                 transform: [{scale}], 
-                                flex: 1,
                                 opacity
                                 }}>
                                 <TouchableOpacity style={{
