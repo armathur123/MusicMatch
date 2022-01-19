@@ -43,7 +43,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                 <BasicInfo displayName={displayName2} userpic={userpic2} chosenPlaylistName={chosenPlaylistName2}/>
             </View>     
             <View style={{display: "flex", flexDirection:"row", justifyContent: "space-between", width: "100%", padding: 10,marginTop:10}}>   
-                <Text style={{color:"white"}}>Common Song Count: </Text>
+                <Text style={{color:"white"}}>Common Songs </Text>
                 <Text style = {{color:"white"}}>{songCount}</Text>
             </View>
             <View>
@@ -56,7 +56,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                     {useNativeDriver: true},
                 )}
                 renderItem={({item, index}) => {
-                    console.log(index);
+                    /*@TODO: try making the normal scale of the items super small and only enlarge when its within the 'viewing area' */
                     const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.9)];
                     const scale = scrollX.interpolate({
                         inputRange,
@@ -69,11 +69,6 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                     });
 
                     return <Animated.View style = {{
-                                display: "flex",
-                                flexDirection: "row",
-                                padding: 10,
-                                alignItems: "center",
-                                justifyContent: 'flex-start',
                                 width:Dimensions.get("window").width - 90,
                                 maxWidth:Dimensions.get("window").width - 90,
                                 backgroundColor: "black",
@@ -90,14 +85,21 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                                 flex: 1,
                                 opacity
                                 }}>
-                                <Image
-                                    style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
-                                    source = {{uri: item.track?.album?.images[0]?.url}}
-                                />  
-                                <View>
-                                    <Text style={{color:"white", fontSize: 20}}>{item?.track?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
-                                    <Text style={{color:"white", fontSize: 10}}>{item?.track?.artists[0]?.name}</Text>
-                                </View>
+                                <TouchableOpacity style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    padding: 10,
+                                    alignItems: "center",
+                                    justifyContent: 'flex-start',}}>
+                                    <Image
+                                        style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
+                                        source = {{uri: item.track?.album?.images[0]?.url}}
+                                    />  
+                                    <View>
+                                        <Text style={{color:"white", fontSize: 20}}>{item?.track?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
+                                        <Text style={{color:"white", fontSize: 10}}>{item?.track?.artists[0]?.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </Animated.View>
                             }}
                 />
