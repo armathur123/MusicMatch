@@ -16,7 +16,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     let commonSongLocal = []; //consider making this a useRef
 
     //variables for animating flatlist
-    const ITEM_SIZE = Dimensions.get("window").width -70;
+    const ITEM_SIZE = Dimensions.get("window").width-90 + 20;
     const scrollX = React.useRef(new Animated.Value(0)).current;
 
     const commonSongCatcher = () => { //find common songs
@@ -56,24 +56,50 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                     {useNativeDriver: true},
                 )}
                 renderItem={({item, index}) => {
-                    const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+6)]
+                    console.log(index);
+                    const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.9)];
                     const scale = scrollX.interpolate({
                         inputRange,
                         outputRange: [1, 1, 1, 0],
                     });
+                    const opacityInputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.2), ITEM_SIZE * (index+1.5)];
+                    const opacity = scrollX.interpolate({
+                        inputRange: opacityInputRange,
+                        outputRange: [1, 1, 1, .3, 0],
+                    });
 
-                    return <Animated.View style={{transform: [{scale}]}}>
-                                <TouchableOpacity style = {styles.resultsListItem}>
-                                    <Image
-                                        style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
-                                        source = {{uri: item.track?.album?.images[0]?.url}}
-                                    />  
-                                    <View>
-                                        <Text style={{color:"white", fontSize: 22}}>{item?.track?.name.substring(0,19) /* @TODO conditional '..' for names that are too long */}</Text> 
-                                        <Text style={{color:"white", fontSize: 12}}>{item?.track?.artists[0]?.name}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </Animated.View>}}
+                    return <Animated.View style = {{
+                                display: "flex",
+                                flexDirection: "row",
+                                padding: 10,
+                                alignItems: "center",
+                                justifyContent: 'flex-start',
+                                width:Dimensions.get("window").width - 90,
+                                maxWidth:Dimensions.get("window").width - 90,
+                                backgroundColor: "black",
+                                borderRadius: 20,
+                                margin: 10,
+                                shadowColor: "black",
+                                shadowOffset: {
+                                    width:-3,
+                                    height: 3
+                                }, 
+                                shadowOpacity: 1,
+                                shadowRadius: 8,
+                                transform: [{scale}], 
+                                flex: 1,
+                                opacity
+                                }}>
+                                <Image
+                                    style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
+                                    source = {{uri: item.track?.album?.images[0]?.url}}
+                                />  
+                                <View>
+                                    <Text style={{color:"white", fontSize: 20}}>{item?.track?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
+                                    <Text style={{color:"white", fontSize: 10}}>{item?.track?.artists[0]?.name}</Text>
+                                </View>
+                            </Animated.View>
+                            }}
                 />
             </View>
         </View>
@@ -102,25 +128,6 @@ const styles = StyleSheet.create({
       padding: 8,
       width: Dimensions.get("window").width,
       maxHeight: "38%",
-    },
-    resultsListItem: {
-      display: "flex",
-      flexDirection: "row",
-      padding: 10,
-      alignItems: "center",
-      justifyContent: 'flex-start',
-      width:Dimensions.get("window").width - 70,
-      maxWidth:Dimensions.get("window").width - 70,
-      backgroundColor: "black",
-      borderRadius: 20,
-      margin: 10,
-      shadowColor: "black",
-      shadowOffset: {
-          width:-3,
-          height: 3
-      }, 
-      shadowOpacity: 1,
-      shadowRadius: 8,
     },
     textfield:{
         fontFamily: 'System',
