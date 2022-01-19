@@ -16,7 +16,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
     let commonSongLocal = []; //consider making this a useRef
 
     //variables for animating flatlist
-    const ITEM_SIZE = Dimensions.get("window").width - 60;
+    const ITEM_SIZE = Dimensions.get("window").width -70;
     const scrollX = React.useRef(new Animated.Value(0)).current;
 
     const commonSongCatcher = () => { //find common songs
@@ -69,7 +69,7 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
                                         source = {{uri: item.track?.album?.images[0]?.url}}
                                     />  
                                     <View>
-                                        <Text style={{color:"white", fontSize: 22}}>{item?.track?.name}</Text>
+                                        <Text style={{color:"white", fontSize: 22}}>{item?.track?.name.substring(0,19) /* @TODO conditional '..' for names that are too long */}</Text> 
                                         <Text style={{color:"white", fontSize: 12}}>{item?.track?.artists[0]?.name}</Text>
                                     </View>
                                 </TouchableOpacity>
