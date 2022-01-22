@@ -9,11 +9,17 @@ let themeColor = 'rgb(218,165,32)';
 
 
 const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
-    
+    /*@TODOS
+    play song from touchable opacity
+    need song info( valence, dancability, etc)
+    visualize data
+        graph
+        p5.js
+    */
     let displayName1 = playlistData1.data?.items[0]?.owner?.display_name;
     let displayName2 = playlistData2.data?.items[0]?.owner?.display_name;
     let songCount = 0;
-    let commonSongLocal = []; //consider making this a useRef
+    let commonSongLocal = []; //turn this into a set to remove repeat 
 
     //variables for animating flatlist
     const ITEM_SIZE = Dimensions.get("window").width-70 + 20;

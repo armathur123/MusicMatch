@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet} from 'react-native';
 import axios from 'axios';
 import { Credentials } from './Credentials';
 import {decode as atob, encode as btoa} from 'base-64'
@@ -8,6 +8,7 @@ import Playlistinput from './components/playlistinput';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ResultPage from './components/resultpage';
+import LoginExample from './components/loginExample';
 
 
 export default function App() {
@@ -48,7 +49,6 @@ export default function App() {
     })
     .then(tokenResponse => {      
       setToken(tokenResponse.data.access_token); //grabs and sets token based on credentials
-
       //gets users public spotify playlists
       const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, { 
         method: 'GET',
@@ -97,6 +97,9 @@ export default function App() {
           headerShown: false
         }}
       >
+        <Stack.Screen name="loginExample">
+          {props => <LoginExample {...props} spotify={spotify}> </LoginExample>}
+        </Stack.Screen>
         {/*first playlist input entry*/}
         <Stack.Screen name="Enter Spotify Username!">
           {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry" profPicUri = {userPicture1}/>}
