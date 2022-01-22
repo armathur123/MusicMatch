@@ -25,14 +25,14 @@ const loginExample = ({spotify}) => {
         // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
         // this must be set to false
         usePKCE: false,
-        redirectUri: makeRedirectUri({ useProxy: true }),
+        redirectUri: makeRedirectUri(),
     },
         discovery
     );
 
     useEffect(() => {
         if (response?.type === 'success') {
-        const { code } = response.params;
+            console.log(response)
         }
     }, [response]);
 
@@ -42,10 +42,10 @@ const loginExample = ({spotify}) => {
         //disabled={!request}
         title="Login to Spotify"
         onPress={() => {
-            //console.log("Login attempt");
             promptAsync();
             }}
         />
+        {response === true && <Text>Success?</Text>}
         </View>
     );
 }
