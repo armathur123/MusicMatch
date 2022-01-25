@@ -29,7 +29,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "Init publish (spotify redirect)",
+    "description": "Still working on spotify redirect",
     "githubUrl": "https://github.com/armathur123/MusicMatch"
   }
 }

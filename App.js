@@ -98,6 +98,9 @@ export default function App() {
         }}
       >
         <Stack.Screen name="loginExample">
+          {props => <LoginExample {...props} spotify={spotify} navPage = {"loginExample2"}> </LoginExample>}
+        </Stack.Screen>
+        <Stack.Screen name="loginExample2">
           {props => <LoginExample {...props} spotify={spotify}> </LoginExample>}
         </Stack.Screen>
         {/*first playlist input entry*/}

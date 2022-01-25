@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import CircularProgress from 'react-native-circular-progress-indicator'; //not currently in use, might come back to this
 import Icon from 'react-native-vector-icons/EvilIcons';
