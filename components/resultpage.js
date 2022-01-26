@@ -8,7 +8,7 @@ let themeColor = 'rgb(218,165,32)';
 
 
 
-const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPlaylistName1, chosenPlaylistName2,songlist1, songlist2}) => {
+const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, chosenPlaylistName1, chosenPlaylistName2, songlist1, songlist2}) => {
     /*@TODOS
     play song from touchable opacity
     need song info( valence, dancability, etc)
@@ -16,25 +16,49 @@ const ResultPage = ({userpic1, userpic2, playlistData1, playlistData2, chosenPla
         graph
         p5.js
     */
-    let displayName1 = playlistData1.data?.items[0]?.owner?.display_name;
-    let displayName2 = playlistData2.data?.items[0]?.owner?.display_name;
+
+    const getArtists = ({songlist1, songlist2}) => {
+        const getArtist = async (id) => {
+            return await axios(`https://api.spotify.com/v1/artists/${id}`, {
+                method: 'GET',
+                headers: { 'Authorization' : 'Bearer ' + token}
+            })
+        };
+        let artists = [];
+        for (let song in songlist1) {
+            let artistID = song?.track?.artists?.id;
+            console.log(artistID);
+            let artist = getArtist(artistID);
+            artists.push(artist);
+        };
+    }
+    getArtists(songlist1, songlist2);
+
     let songCount = 0;
-    let commonSongLocal = []; //turn this into a set to remove repeat 
 
     //variables for animating flatlist
     const ITEM_SIZE = Dimensions.get("window").width-70 + 20;
     const scrollX = React.useRef(new Animated.Value(0)).current;
 
     const commonSongCatcher = () => { //find common songs
+        const songSet = new Set();
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {
                 if (song1?.track?.id == song2?.track?.id){
                     songCount += 1
-                    commonSongLocal.push(song1);
+                    songSet.add(song1);
                 }
             }
         }
+        songCount = songSet.size;
+        const songList = [...songSet];
+        return songList;
         // console.log(commonSongLocal[0].track?.album?.images[0]?.url);
+    }
+    const commonSongLocal = commonSongCatcher();
+
+    const genreCounter = () => { //count and aggregate all genres
+
     }
     commonSongCatcher();
 

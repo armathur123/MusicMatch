@@ -69,7 +69,6 @@ export default function App() {
       })
       .then(profileRaw => {
         setUserPicture(profileRaw.data?.images[0].url);
-        console.log(profileRaw.data?.images[0]?.url)
       }).catch(err => {
         console.log("profpic error");
         console.log(err);
@@ -97,12 +96,12 @@ export default function App() {
           headerShown: false
         }}
       >
-        <Stack.Screen name="loginExample">
-          {props => <LoginExample {...props} spotify={spotify} navPage = {"loginExample2"}> </LoginExample>}
+        {/* <Stack.Screen name="loginExample">
+          {props => <LoginExample {...props} spotify={spotify} navPage = {"loginExample"}> </LoginExample>}
         </Stack.Screen>
         <Stack.Screen name="loginExample2">
           {props => <LoginExample {...props} spotify={spotify}> </LoginExample>}
-        </Stack.Screen>
+        </Stack.Screen>  commenting out for now, will come back to this, probably make it an api hook*/}
         {/*first playlist input entry*/}
         <Stack.Screen name="Enter Spotify Username!">
           {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry" profPicUri = {userPicture1}/>}
@@ -113,7 +112,7 @@ export default function App() {
         </Stack.Screen>
         {/*Results Page*/}
         <Stack.Screen name="resultPage">
-          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} playlistData1={playlistData1} playlistData2={playlistData2} userpic1={userPicture1} userpic2 = {userPicture2} songlist1 = {songlist1} songlist2 = {songlist2}/>}
+          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} userpic1={userPicture1} userpic2 = {userPicture2} displayName1 = {playlistData1.data?.items[0]?.owner?.display_name} displayName2={playlistData2.data?.items[0]?.owner?.display_name} songlist1 = {songlist1} songlist2 = {songlist2}/>}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

@@ -37,19 +37,6 @@ const loginExample = ({spotify, navigation, navPage, AuthCode, setAuthCode}) => 
 
     useEffect(() => {
         if (response?.type === 'success') {
-            // axios('https://accounts.spotify.com/api/token', { //consider the authdocs way to exchange the code for a token
-            //     headers: {
-            //       'Content-Type' : 'application/x-www-form-urlencoded',
-            //       'Authorization' : 'Basic ' + btoa(spotify.ClientId + ':' + spotify.ClientSecret)      
-            //     },
-            //     data: `grant_type=authorization_code&code=${response?.params?.code}&redirect_uri=${response?.url}`,
-            //     method: 'POST'
-            //   }).then((tokenResponse) => {
-            //     console.log("axios" + tokenResponse.data.access_token);
-            //   }).catch((err) => {
-            //       console.log("token error");
-            //       console.log(err);
-            //   });
             console.log(response);
             exchangeCodeAsync(  {
                 code: response?.params?.code,
@@ -62,7 +49,7 @@ const loginExample = ({spotify, navigation, navPage, AuthCode, setAuthCode}) => 
               },
               discovery).then((tokenResponse) => {
                   console.log(tokenResponse);
-              })
+              });
         }
     }, [response]);
 

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 import {Dimensions} from 'react-native';
@@ -21,6 +21,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
       method: 'GET',
       headers: { 'Authorization' : 'Bearer ' + token}
     });
+    //track promise helps run loading animation as long as function continues
     trackPromise(request
       .then (songsRaw => {
         total = songsRaw?.data?.total; //set total number of songs (api iterations)
