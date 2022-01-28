@@ -3,36 +3,49 @@ import React, {useState, useEffect} from 'react';
 import CameraComp from '../components/camera';
 import BasicInfo from '../components/basicInfo';
 import {Dimensions} from 'react-native';
+import axios from 'axios';
 import { shadowColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 let themeColor = 'rgb(218,165,32)';
 
 
-
-const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, chosenPlaylistName1, chosenPlaylistName2, songlist1, songlist2}) => {
-    /*@TODOS
+/*@TODOS
     play song from touchable opacity
     need song info( valence, dancability, etc)
     visualize data
-        graph
-        p5.js
-    */
+    graph
+    p5.js
+*/
 
-    const getArtists = ({songlist1, songlist2}) => {
+const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, chosenPlaylistName1, chosenPlaylistName2, songlist1, songlist2, token}) => {
+   
+
+    const [artists, setArtists] = useState();
+    useEffect(() => { //@TODO, need to get this api call working lolololol
         const getArtist = async (id) => {
-            return await axios(`https://api.spotify.com/v1/artists/${id}`, {
-                method: 'GET',
-                headers: { 'Authorization' : 'Bearer ' + token}
-            })
+            try {
+                const resp = await axios(`https://api.spotify.com/v1/artists/${id}`, {
+                    method: 'GET',
+                    headers: { 'Authorization' : 'Bearer ' + token}
+                });
+                return resp;
+            } catch (err) {
+                console.log(err);
+            }
         };
-        let artists = [];
-        for (let song in songlist1) {
-            let artistID = song?.track?.artists?.id;
-            console.log(artistID);
-            let artist = getArtist(artistID);
-            artists.push(artist);
-        };
-    }
-    getArtists(songlist1, songlist2);
+    
+        const getArtists = () => { //uses songlist1 and songlist2
+            let artistPromises = [];
+            for (let song of songlist2) {
+                let artistID = song?.track?.artists[0]?.id;
+                artistPromises.push(getArtist(artistID));
+            };
+            const artists = Promise.all(artistPromises).then((values) => {
+                setArtists(values);
+            });
+        }
+    });
+    console.log(artists)
+
 
     let songCount = 0;
 
@@ -40,7 +53,7 @@ const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, c
     const ITEM_SIZE = Dimensions.get("window").width-70 + 20;
     const scrollX = React.useRef(new Animated.Value(0)).current;
 
-    const commonSongCatcher = () => { //find common songs
+    const commonSongCatcher = () => { //find common songs; uses songlist1 and songlist2
         const songSet = new Set();
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {

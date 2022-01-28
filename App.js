@@ -112,7 +112,7 @@ export default function App() {
         </Stack.Screen>
         {/*Results Page*/}
         <Stack.Screen name="resultPage">
-          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} userpic1={userPicture1} userpic2 = {userPicture2} displayName1 = {playlistData1.data?.items[0]?.owner?.display_name} displayName2={playlistData2.data?.items[0]?.owner?.display_name} songlist1 = {songlist1} songlist2 = {songlist2}/>}
+          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} userpic1={userPicture1} userpic2 = {userPicture2} displayName1 = {playlistData1.data?.items[0]?.owner?.display_name} displayName2={playlistData2.data?.items[0]?.owner?.display_name} songlist1 = {songlist1} songlist2 = {songlist2} token = {token}/>}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
