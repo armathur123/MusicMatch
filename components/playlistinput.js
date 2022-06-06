@@ -1,46 +1,22 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import NextButton from '../components/nextbutton';
 import axios from 'axios';
 import {Dimensions} from 'react-native';
 import {usePromiseTracker} from "react-promise-tracker";
-import {trackPromise} from 'react-promise-tracker';
-
+import { PlaylistDataContext } from '../contexts/PlaylistDataContext';
+import { getAllSongs } from '../apiCalls';
 
 const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage, profPicUri}) => {
 
+  const testContext = useContext(PlaylistDataContext);
   const [message, setMessage] = useState('');
   const [iconVisibility, setIconVisibility] = useState(true);
-  let songlistLocal = [];
   const {promiseInProgress} = usePromiseTracker();
   const [selectedItem, setSelectedItem] = useState('')
 
-  const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => {
-    const request = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
-      method: 'GET',
-      headers: { 'Authorization' : 'Bearer ' + token}
-    });
-    //track promise helps run loading animation as long as function continues
-    trackPromise(request
-      .then (songsRaw => {
-        total = songsRaw?.data?.total; //set total number of songs (api iterations)
-        let count = songsRaw?.data?.items.length;
-        currentCount += count; //set current songcount
-        songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
-        if (currentCount < total){ //recursively calls until entire playlist has been gotten
-          getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
-        }
-        else { //all songs have been caught, sets songlist
-          setSongList(songlistLocal);
-          return request;
-        }
-      })
-      .catch(err => {
-        console.log("getsongs error");
-        console.log(err);
-      }));
-  }
+
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
@@ -77,7 +53,7 @@ const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, p
                     // playlistPressHandler(item, setChosenPlaylist, setSonglist); 
                     setChosenPlaylist(item.name);
                     setSelectedItem(item.id);
-                    getSongs(token, item.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
+                    getAllSongs(token, item.id, setSonglist); //current count, total, and offset start at 0
                   }}  
                   style = {
                     (item.id === selectedItem) ? 

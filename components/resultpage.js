@@ -20,39 +20,69 @@ const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, c
    
 
     const [artists, setArtists] = useState();
+    const [genreTracker, setGenreTracker] = useState();
     useEffect(() => { //@TODO, need to get this api call working lolololol
-        const getArtist = async (id) => {
-            try {
-                const resp = await axios(`https://api.spotify.com/v1/artists/${id}`, {
-                    method: 'GET',
-                    headers: { 'Authorization' : 'Bearer ' + token}
-                });
-                return resp;
-            } catch (err) {
-                console.log(err);
-            }
+
+        let genreLocal = {};
+        let artistListLocal = [];
+
+        const getArtist = (id) => {
+            return axios(`https://api.spotify.com/v1/artists/${id}`, {
+                method: 'GET',
+                headers: { 'Authorization' : 'Bearer ' + token}
+            });
         };
+
+        const genreTrackerBuilder = () => {
+
+        }
     
-        const getArtists = () => { //uses songlist1 and songlist2
-            let artistPromises = [];
+        const getArtists = async () => { //uses songlist1 and songlist2
             for (let song of songlist2) {
                 let artistID = song?.track?.artists[0]?.id;
-                artistPromises.push(getArtist(artistID));
-            };
-            const artists = Promise.all(artistPromises).then((values) => {
-                setArtists(values);
-            });
+                let artistInfo = await getArtist(artistID);
+                artistListLocal.push(artistInfo);
+            }
+            setArtists(artistListLocal);
+            console.log(artistListLocal);
+            for (let artist of artistListLocal) {
+                console.log(artist);
+                let genres = artist?.data?.genre
+                for (let genre of genres) {
+                    // if (!Object.keys(genreLocal) || !Object.keys(genreAggregator).includes(genre)) {
+                    //     genreLocal[]
+                    // }
+                }
+            }        
         }
-    });
-    console.log(artists)
+
+        getArtists();
+    }, []);
+    /*
+                    let genres = artistInfo?.data?.genres;
+                for (let genre of genres) {
+                    if (Object.keys(genreAggregator).includes(genre)) { //if genreAggregator contains key then update count
+                    }
+                    else {
+                        genreAggregator[genre] = 1;
+                    }
+                    // if (Object.keys(genreAggregator).includes(genre)) { //if genreAggregator contains key then update count
+                    //     genreAggregator[genre] += 1;
+                    // }
+                    // else {
+                    //     genreAggregator[genre] = 1;
+                    // }
+                    // artistList.push(artistInfo?.data?.name);
+                }
+
+    */
 
 
-    let songCount = 0;
 
     //variables for animating flatlist
     const ITEM_SIZE = Dimensions.get("window").width-70 + 20;
     const scrollX = React.useRef(new Animated.Value(0)).current;
-
+    let songCount = 0;
     const commonSongCatcher = () => { //find common songs; uses songlist1 and songlist2
         const songSet = new Set();
         for (const song1 of songlist1) {
@@ -70,9 +100,6 @@ const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, c
     }
     const commonSongLocal = commonSongCatcher();
 
-    const genreCounter = () => { //count and aggregate all genres
-
-    }
     commonSongCatcher();
 
 
