@@ -23,9 +23,9 @@ export default function App() {
       global.atob = atob;
   }
 
+  const [resultsData, setResultsData] = useState({user1:null, user2:null})
   //example user IDS for testing reference
   // const userID = '12176356166'; my personal spotify
-  const spotify = Credentials(); //grabs preset credentials: clientID and secret from my personal profile
   const [token, setToken] = useState('');
   const [playlistData1, setPlaylistData1] = useState('');
   const [playlistData2, setPlaylistData2] = useState('');
@@ -87,7 +87,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <PlaylistDataContext.Provider value={'hi'}>
+      <PlaylistDataContext.Provider value={{resultsData, setResultsData}}>
         <Stack.Navigator //hide top header bar
           screenOptions={{
             headerShown: false
@@ -101,11 +101,11 @@ export default function App() {
           </Stack.Screen>  commenting out for now, will come back to this, probably make it an api hook*/}
           {/*first playlist input entry*/}
           <Stack.Screen name="Enter Spotify Username!">
-            {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry" profPicUri = {userPicture1}/>}
+            {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry"/>}
           </Stack.Screen>
           {/*second playlist input entry*/}
           <Stack.Screen name="secondEntry">
-            {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage" profPicUri = {userPicture2}/>}
+            {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage"/>}
           </Stack.Screen>
           {/*Results Page*/}
           <Stack.Screen name="resultPage">
