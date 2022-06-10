@@ -1,12 +1,27 @@
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useContext} from 'react';
 import CircularProgress from 'react-native-circular-progress-indicator'; //not currently in use, might come back to this
 import Icon from 'react-native-vector-icons/EvilIcons';
 import AnimatedLoader from "react-native-animated-loader";
+import { PlaylistDataContext } from '../contexts/PlaylistDataContext';
 
 
+const NextButton = ({navigation, navPage, promiseInProgress, songlist, user}) => {
 
-const NextButton = ({navigation, navPage, songlist, promiseInProgress}) => {
+  const {resultsData, setResultsData} = useContext(PlaylistDataContext);
+  
+  useEffect(() => {
+    console.log(resultsData);
+  })
+
+  const nextButtonPress = () => {
+    const userObj = {songlist,user};
+    setResultsData(prev => {
+      const passOn = [...prev, userObj];
+      return passOn;
+    })
+    navigation.navigate(navPage)   
+  }
     return (
         <View style={styles.container}>
             {promiseInProgress &&
@@ -21,8 +36,10 @@ const NextButton = ({navigation, navPage, songlist, promiseInProgress}) => {
                 />
                 {/* https://lottiefiles.com/69922-loader-animation credit to Syed Haider Ali */}
               </TouchableOpacity>}
-            {(songlist != undefined && !promiseInProgress) && //songlist has songs and api isnt still loading songs
-              <TouchableOpacity style = {styles.button} onPress={() => navigation.navigate(navPage)}>
+            {(songlist !== undefined && songlist.length !== 0 && !promiseInProgress) && //songlist has songs and api isnt still loading songs
+              <TouchableOpacity 
+                style = {styles.button} 
+                onPress={nextButtonPress}>
                 <Icon name='chevron-right' size={75} color="white" />
               </TouchableOpacity>}
         </View>

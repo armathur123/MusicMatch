@@ -1,35 +1,62 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import {trackPromise} from 'react-promise-tracker';
 import React, {useState, useContext, useEffect} from 'react';
 import NextButton from '../components/nextbutton';
 import {Dimensions} from 'react-native';
 import {usePromiseTracker} from "react-promise-tracker";
-import { PlaylistDataContext } from '../contexts/PlaylistDataContext';
-import { getAllSongs } from '../apiCalls';
-import { tokenFetch, playlistFetch, userFetch } from '../apiCalls';
+import { tokenFetch, playlistFetch, userFetch} from '../apiCalls';
 
-const Playlistinput = ({setSonglist, setChosenPlaylist, chosenPlaylist, songlist, innerText, token, navigation, navPage}) => {
+const Playlistinput = ({ navigation, navPage}) => {
 
+  useEffect(() => {
+    console.log()
+  },[songlist])
 
-  const [username, setUsername] = useState('');
+  const [token, setToken] = useState('');
+  const [user, setUser] = useState({displayName: '', username:'', userImage: null});
   const [playlistData, setPlaylistData] = useState([])
-  const [userImageUri, setuserImageUri] = useState('')
-  const {resultsData, setResultsData} = useContext(PlaylistDataContext);
-
   const [message, setMessage] = useState('');
   const {promiseInProgress} = usePromiseTracker();
   const [selectedItem, setSelectedItem] = useState('')
+  const [songlist, setSonglist] = useState([]);
+
+  const getSongs = (token, playlistID, setSongList, currentCount, total, offset,songlistLocal) => {
+    const songRequest = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
+      method: 'GET',
+      headers: { 'Authorization' : 'Bearer ' + token}
+    });
+    //track promise helps run loading animation as long as function continues
+    trackPromise(songRequest
+      .then (songsRaw => {
+        total = songsRaw?.data?.total; //set total number of songs (api iterations)
+        let count = songsRaw?.data?.items.length;
+        currentCount += count; //set current songcount
+        // songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
+        songlistLocal = [...songlistLocal, ...songsRaw.data.items];
+        // setSongList(prev => [...prev, ...songsRaw.data.items])
+        if (currentCount < total){ //recursively calls until entire playlist has been gotten
+          getSongs(token, playlistID, setSongList, currentCount, total, currentCount, songlistLocal)
+        }
+        else { //all songs have been caught, sets songlist
+          setSongList(songlistLocal);
+          return;
+        }
+      }));
+  }
 
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
             {(!playlistData.length == 0) && <View style = {styles.profInfoContainer}>
               {/* userprofile image */}
-              <Image
+              {user.userImage ? <Image
                 style={{width: 60, height: 60, borderRadius: 30, marginRight: 20}}
-                source = {{uri: userImageUri}}
-              />
-              {(!playlistData.length == 0) ? <Text style={styles.usernameTextField}>{playlistData[0]?.owner?.display_name}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
+                source = {{uri: user.userImage}}
+              />:
+              <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>}
+              {(!playlistData.length == 0) ? <Text style={styles.usernameTextField}>{user.displayName}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
             </View>}
             <View style={styles.searchSection}>
               <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>
@@ -40,18 +67,25 @@ const Playlistinput = ({setSonglist, setChosenPlaylist, chosenPlaylist, songlist
               underlineColorAndroid="transparent"
               onChangeText={(val) => {
                   tokenFetch().then((tokenData) => {
-                    const username = val.trim()
+                    setToken(tokenData.data.access_token);
+                    const username = val.trim();
                     playlistFetch(username,tokenData).then((playlistRaw) => {
-                      console.log('playlistRaw')
-                      console.log(playlistRaw?.data?.items);
                       setPlaylistData(playlistRaw?.data?.items);
-                    })
+                    });
                     userFetch(username, tokenData).then((profileRaw) => {
-                      setuserImageUri(profileRaw.data.images[0].url)
-                    })
-                  })
-                  setUsername(username);
-                  setSonglist(undefined);
+                      setUser(prev => {
+                        prev.displayName = profileRaw.data.display_name;
+                        prev.userImage = profileRaw?.data.images[0]?.url;
+                        // console.log('rofileRaw.data.images[0].url');
+                        // console.log(profileRaw.data.images[0].url);
+                        prev.username = username;
+                        console.log('prev')
+                        console.log(prev)
+                        return prev; 
+                      });
+                    });
+                  });
+                  setSonglist([]);
                 }}/>
             </View> 
           </View>
@@ -63,10 +97,9 @@ const Playlistinput = ({setSonglist, setChosenPlaylist, chosenPlaylist, songlist
                 renderItem={({item}) => (
                   <TouchableOpacity 
                     onPress={() => {
-                      setSonglist(undefined);
-                      setChosenPlaylist(item.name);
+                      setSonglist([]);
                       setSelectedItem(item.id);
-                      getAllSongs(token, item.id, setSonglist); //current count, total, and offset start at 0
+                      getSongs(token, item.id, setSonglist, 0, 0, 0,[]); //current count, total, and offset start at 0
                     }}  
                     style = {
                       (item.id === selectedItem) ? 
@@ -82,7 +115,7 @@ const Playlistinput = ({setSonglist, setChosenPlaylist, chosenPlaylist, songlist
                   </TouchableOpacity>
                 )}
               />
-              <NextButton innerText={innerText} navigation={navigation} navPage={navPage} songlist={songlist} promiseInProgress={promiseInProgress}></NextButton>
+              <NextButton navigation={navigation} navPage={navPage} promiseInProgress={promiseInProgress} songlist={songlist} user={user}></NextButton>
             </View>
           }
         </View>

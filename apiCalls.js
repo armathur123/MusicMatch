@@ -38,37 +38,3 @@ export const userFetch = async(userID, tokenResponse) => {
     return getUserProfile;
 } 
 
-
-//regular api call to get songs
-export const getSongs = (token, playlistID, setSongList, currentCount, total, offset, songlistLocal) => {
-    const request = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
-      method: 'GET',
-      headers: { 'Authorization' : 'Bearer ' + token}
-    });
-    //track promise helps run loading animation as long as function continues
-    trackPromise(request
-      .then (songsRaw => {
-        total = songsRaw?.data?.total; //set total number of songs (api iterations)
-        let count = songsRaw?.data?.items.length;
-        currentCount += count; //set current songcount
-        songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
-        if (currentCount < total){ //recursively calls until entire playlist has been gotten
-          getSongs(token, playlistID, setSongList, currentCount, total, currentCount, songlistLocal)
-        }
-        else { //all songs have been caught, sets songlist
-          setSongList(songlistLocal);
-          return request;
-        }
-      })
-      .catch(err => {
-        console.log("getsongs error");
-        console.log(err);
-      }));
-  }
-
-
-//recursive call to get all songs
-export const getAllSongs = (token, playlistID, setSongList) => {
-    let songlistLocal = [];
-    return getSongs(token, playlistID, setSongList, 0, 0, 0, songlistLocal); //current count, total, and offset start at 0
-}
