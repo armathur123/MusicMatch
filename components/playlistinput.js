@@ -1,100 +1,120 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import React, {useState} from 'react';
-import NextButton from '../components/nextbutton';
 import axios from 'axios';
+import {trackPromise} from 'react-promise-tracker';
+import React, {useState, useContext, useEffect} from 'react';
+import NextButton from '../components/nextbutton';
 import {Dimensions} from 'react-native';
 import {usePromiseTracker} from "react-promise-tracker";
-import {trackPromise} from 'react-promise-tracker';
+import { tokenFetch, playlistFetch, userFetch} from '../apiCalls';
 
+const Playlistinput = ({ navigation, navPage}) => {
 
-const Playlistinput = ({username, setUsername, setSonglist, setChosenPlaylist, playlistData, chosenPlaylist, songlist, innerText, token, navigation, navPage, profPicUri}) => {
-
+  const [token, setToken] = useState('');
+  const [user, setUser] = useState({displayName: '', username:'', userImage: null});
+  const [playlistData, setPlaylistData] = useState([])
   const [message, setMessage] = useState('');
-  const [iconVisibility, setIconVisibility] = useState(true);
-  let songlistLocal = [];
   const {promiseInProgress} = usePromiseTracker();
   const [selectedItem, setSelectedItem] = useState('')
+  const [songData, setSongData] = useState([]);
 
-  const getSongs = (token, playlistID, setSongList, currentCount, total, offset) => {
-    const request = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
+  const getSongs = (token, playlistID, setSongData, currentCount, total, offset,songlistLocal, playlistname) => {
+    const songRequest = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
       method: 'GET',
       headers: { 'Authorization' : 'Bearer ' + token}
     });
     //track promise helps run loading animation as long as function continues
-    trackPromise(request
+    trackPromise(songRequest
       .then (songsRaw => {
         total = songsRaw?.data?.total; //set total number of songs (api iterations)
         let count = songsRaw?.data?.items.length;
         currentCount += count; //set current songcount
-        songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
+        // songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
+        songlistLocal = [...songlistLocal, ...songsRaw.data.items];
+        // setSongData(prev => [...prev, ...songsRaw.data.items])
         if (currentCount < total){ //recursively calls until entire playlist has been gotten
-          getSongs(token, playlistID, setSongList, currentCount, total, currentCount)
+          getSongs(token, playlistID, setSongData, currentCount, total, currentCount, songlistLocal, playlistname)
         }
         else { //all songs have been caught, sets songlist
-          setSongList(songlistLocal);
-          return request;
+          const songData = {playlistName: playlistname, songlist:songlistLocal};
+          console.log(songData)
+          setSongData(songData);
+          return;
         }
-      })
-      .catch(err => {
-        console.log("getsongs error");
-        console.log(err);
       }));
   }
+
     return ( 
         <View style = {styles.Container}>
           <View style = {styles.inputContainer}>
-            {!(playlistData.data?.items[0] === undefined) && <View style = {styles.profInfoContainer}>
+            {(!playlistData.length == 0) && <View style = {styles.profInfoContainer}>
               {/* userprofile image */}
-              <Image
+              {user.userImage ? <Image
                 style={{width: 60, height: 60, borderRadius: 30, marginRight: 20}}
-                source = {{uri: profPicUri}}
-              />
-              {!(playlistData.data?.items[0] === undefined) ? <Text style={styles.usernameTextField}>{playlistData.data?.items[0]?.owner?.display_name}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
+                source = {{uri: user.userImage}}
+              />:
+              <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>}
+              {(!playlistData.length == 0) ? <Text style={styles.usernameTextField}>{user.displayName}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
             </View>}
             <View style={styles.searchSection}>
-              {iconVisibility && <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>}
+              <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>
               <TextInput 
               style={styles.input}
               placeholder='Enter Spotify Username'
               placeholderTextColor="white"
               underlineColorAndroid="transparent"
               onChangeText={(val) => {
-                  setUsername(val.trim());
-                  setSonglist(undefined);
+                  tokenFetch().then((tokenData) => {
+                    setToken(tokenData.data.access_token);
+                    const username = '12176356166'; //temp hardcode for testing
+                    playlistFetch(username,tokenData).then((playlistRaw) => {
+                      setPlaylistData(playlistRaw?.data?.items);
+                    });
+                    userFetch(username, tokenData).then((profileRaw) => {
+                      setUser(prev => {
+                        prev.displayName = profileRaw.data.display_name;
+                        prev.username = username;
+                        prev.userImage = profileRaw?.data.images[0]?.url;
+                        return prev; 
+                      });
+                    });
+                  });
+                  setSongData([]);
+
                 }}/>
             </View> 
           </View>
-          {!(playlistData.data?.items[0] === undefined) && 
-          <View style={styles.flatlistContainer}>
-            <FlatList style={styles.flatlist}
-              keyExtractor={(item) => item.id}
-              data={playlistData.data?.items}
-              renderItem={({item}) => (
-                <TouchableOpacity 
-                  onPress={() => {
-                    setSonglist(undefined);
-                    // playlistPressHandler(item, setChosenPlaylist, setSonglist); 
-                    setChosenPlaylist(item.name);
-                    setSelectedItem(item.id);
-                    getSongs(token, item.id, setSonglist, 0, 0, 0); //current count, total, and offset start at 0
-                  }}  
-                  style = {
-                    (item.id === selectedItem) ? 
-                    styles.playlistItemSelected : styles.playlistItem
-                    }>
-                  <Image
-                    style={{width: 50, height: 50}}
-                    source = {{uri: item.images[0]?.url}}
-                  />
-                  <View style={styles.itemtextContainer}>
-                    <Text style={styles.textfield}>{item.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-            <NextButton innerText = {innerText} navigation = {navigation} navPage = {navPage} songlist={songlist} promiseInProgress ={promiseInProgress}></NextButton>
-          </View>}
+          {(!playlistData.length == 0) && 
+            <View style={styles.flatlistContainer}>
+              <FlatList style={styles.flatlist}
+                keyExtractor={(item) => item.id}
+                data={playlistData}
+                renderItem={({item}) => (
+                  <TouchableOpacity 
+                    onPress={() => {
+                      setSongData([]);
+                      setSelectedItem(item.id);
+                      console.log("item.name")
+                      console.log(item.name)
+                      getSongs(token, item.id, setSongData, 0, 0, 0,[], item.name); //current count, total, and offset start at 0
+                    }}  
+                    style = {
+                      (item.id === selectedItem) ? 
+                      styles.playlistItemSelected : styles.playlistItem
+                      }>
+                    <Image
+                      style={{width: 50, height: 50}}
+                      source = {{uri: item.images[0]?.url}}
+                    />
+                    <View style={styles.itemtextContainer}>
+                      <Text style={styles.textfield}>{item.name}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
+              <NextButton navigation={navigation} navPage={navPage} promiseInProgress={promiseInProgress} songData={songData} user={user}></NextButton>
+            </View>
+          }
         </View>
      );
 }
@@ -168,12 +188,10 @@ const styles = StyleSheet.create({
   },
   input:{
     flex: 1,
-    width: 307,
     color: "white",
     fontFamily: 'System',
     paddingTop: 5,
     paddingBottom: 5,
-    paddingLeft: 5,
   },
   itemtextContainer: {
     display:"flex",

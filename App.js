@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import { StyleSheet} from 'react-native';
 import axios from 'axios';
@@ -9,6 +8,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ResultPage from './components/resultpage';
 import LoginExample from './components/loginExample';
+import { PlaylistDataContext } from './contexts/PlaylistDataContext';
+import { tokenFetch, playlistFetch, userFetch } from './apiCalls';
 
 
 export default function App() {
@@ -21,100 +22,40 @@ export default function App() {
       global.atob = atob;
   }
 
+  const [resultsData, setResultsData] = useState([]);
   //example user IDS for testing reference
   // const userID = '12176356166'; my personal spotify
-  const spotify = Credentials(); //grabs preset credentials: clientID and secret from my personal profile
-  const [token, setToken] = useState('');
-  const [playlistData1, setPlaylistData1] = useState('');
-  const [playlistData2, setPlaylistData2] = useState('');
-  const [username1, setUsername1] = useState('');  
-  const [username2, setUsername2] = useState('');  
-  const [chosenPlaylist1, setChosenPlaylist1] = useState('');
-  const [chosenPlaylist2, setChosenPlaylist2] = useState('');
-  const [userPicture1, setUserPicture1] = useState();
-  const [userPicture2, setUserPicture2] = useState();
-
-  const [songlist1, setSonglist1] = useState();
-  const [songlist2, setSonglist2] = useState();
-
-
-  useEffect(() => {
-    axios('https://accounts.spotify.com/api/token', {
-      headers: {
-        'Content-Type' : 'application/x-www-form-urlencoded',
-        'Authorization' : 'Basic ' + btoa(spotify.ClientId + ':' + spotify.ClientSecret)      
-      },
-      data: 'grant_type=client_credentials',
-      method: 'POST'
-    })
-    .then(tokenResponse => {      
-      setToken(tokenResponse.data.access_token); //grabs and sets token based on credentials
-      //gets users public spotify playlists
-      const usergrab = (userID, setUserPlaylistData) => axios(`https://api.spotify.com/v1/users/${userID}/playlists`, { 
-        method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
-      })
-      .then(playlistRaw => {      
-        setUserPlaylistData(playlistRaw);
-      }).catch(err => {
-        console.log("setplaylist error");
-        console.log(err);
-        setUserPlaylistData("error"); //need to set something here to prevent lack of update in flatlist
-      });
-
-      //get profile info based on a spotify username
-      const getUserProfile = (userID, setUserPicture) => axios(`https://api.spotify.com/v1/users/${userID}`, { 
-        method: 'GET',
-        headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
-      })
-      .then(profileRaw => {
-        setUserPicture(profileRaw.data?.images[0].url);
-      }).catch(err => {
-        console.log("profpic error");
-        console.log(err);
-        setUserPicture("");
-      });
-
-      //get playlist data and set userpicture for both profiles
-      usergrab(username1, setPlaylistData1);
-      getUserProfile(username1, setUserPicture1);
-      usergrab(username2, setPlaylistData2);
-      getUserProfile(username2, setUserPicture2);
-      })
-      .catch(err => {
-        console.log("gettoken error");
-        console.log(err);
-      });
-  },[username1, username2]); //updates everytime username changes
 
   const Stack = createNativeStackNavigator(); //stacknavigator instance
 
   return (
     <NavigationContainer>
-      <Stack.Navigator //hide top header bar
-        screenOptions={{
-          headerShown: false
-        }}
-      >
-        {/* <Stack.Screen name="loginExample">
-          {props => <LoginExample {...props} spotify={spotify} navPage = {"loginExample"}> </LoginExample>}
-        </Stack.Screen>
-        <Stack.Screen name="loginExample2">
-          {props => <LoginExample {...props} spotify={spotify}> </LoginExample>}
-        </Stack.Screen>  commenting out for now, will come back to this, probably make it an api hook*/}
-        {/*first playlist input entry*/}
-        <Stack.Screen name="Enter Spotify Username!">
-          {props => <Playlistinput {...props} playlistData = {playlistData1} username = {username1} setUsername = {setUsername1} setSonglist = {setSonglist1} setChosenPlaylist = {setChosenPlaylist1} chosenPlaylist = {chosenPlaylist1} songlist = {songlist1} innerText = "Select next user!" token = {token} navPage = "secondEntry" profPicUri = {userPicture1}/>}
-        </Stack.Screen>
-        {/*second playlist input entry*/}
-        <Stack.Screen name="secondEntry">
-          {props => <Playlistinput {...props} playlistData = {playlistData2} username = {username2} setUsername = {setUsername2} setSonglist = {setSonglist2} setChosenPlaylist = {setChosenPlaylist2} chosenPlaylist = {chosenPlaylist2} songlist = {songlist2} innerText = "Generate results!" token = {token} navPage = "resultPage" profPicUri = {userPicture2}/>}
-        </Stack.Screen>
-        {/*Results Page*/}
-        <Stack.Screen name="resultPage">
-          {props => <ResultPage {...props} chosenPlaylistName1= {chosenPlaylist1} chosenPlaylistName2={chosenPlaylist2} userpic1={userPicture1} userpic2 = {userPicture2} displayName1 = {playlistData1.data?.items[0]?.owner?.display_name} displayName2={playlistData2.data?.items[0]?.owner?.display_name} songlist1 = {songlist1} songlist2 = {songlist2} token = {token}/>}
-        </Stack.Screen>
-      </Stack.Navigator>
+      <PlaylistDataContext.Provider value={{resultsData, setResultsData}}>
+        <Stack.Navigator //hide top header bar
+          screenOptions={{
+            headerShown: false
+          }}
+        >
+          {/* <Stack.Screen name="loginExample">
+            {props => <LoginExample {...props} spotify={spotify} navPage = {"loginExample"}> </LoginExample>}
+          </Stack.Screen>
+          <Stack.Screen name="loginExample2">
+            {props => <LoginExample {...props} spotify={spotify}> </LoginExample>}
+          </Stack.Screen>  commenting out for now, will come back to this, probably make it an api hook*/}
+          {/*first playlist input entry*/}
+          <Stack.Screen name="Enter Spotify Username!">
+            {props => <Playlistinput {...props} navPage = "secondEntry"/>}
+          </Stack.Screen>
+          {/*second playlist input entry*/}
+          <Stack.Screen name="secondEntry">
+            {props => <Playlistinput {...props} navPage = "resultPage"/>}
+          </Stack.Screen>
+          {/*Results Page*/}
+          <Stack.Screen name="resultPage">
+            {props => <ResultPage {...props} />}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </PlaylistDataContext.Provider>
     </NavigationContainer>
   );
 }

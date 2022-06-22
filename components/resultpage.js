@@ -1,12 +1,11 @@
 import { Animated, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Image} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import CameraComp from '../components/camera';
+import React, {useState, useEffect, useContext, useMemo} from 'react';
 import BasicInfo from '../components/basicInfo';
 import {Dimensions} from 'react-native';
-import axios from 'axios';
 import { shadowColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 let themeColor = 'rgb(218,165,32)';
-
+import { PlaylistDataContext } from '../contexts/PlaylistDataContext';
+import Bargraph from '../components/Bargraph/Bargraph';
 
 /*@TODOS
     play song from touchable opacity
@@ -16,44 +15,17 @@ let themeColor = 'rgb(218,165,32)';
     p5.js
 */
 
-const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, chosenPlaylistName1, chosenPlaylistName2, songlist1, songlist2, token}) => {
-   
-
-    const [artists, setArtists] = useState();
-    useEffect(() => { //@TODO, need to get this api call working lolololol
-        const getArtist = async (id) => {
-            try {
-                const resp = await axios(`https://api.spotify.com/v1/artists/${id}`, {
-                    method: 'GET',
-                    headers: { 'Authorization' : 'Bearer ' + token}
-                });
-                return resp;
-            } catch (err) {
-                console.log(err);
-            }
-        };
-    
-        const getArtists = () => { //uses songlist1 and songlist2
-            let artistPromises = [];
-            for (let song of songlist2) {
-                let artistID = song?.track?.artists[0]?.id;
-                artistPromises.push(getArtist(artistID));
-            };
-            const artists = Promise.all(artistPromises).then((values) => {
-                setArtists(values);
-            });
-        }
-    });
-    console.log(artists)
-
-
-    let songCount = 0;
+const ResultPage = ({}) => {
+    const {resultsData, setResultsData} = useContext(PlaylistDataContext);
+    useEffect(()=> {
+        console.log(resultsData)
+    })
 
     //variables for animating flatlist
     const ITEM_SIZE = Dimensions.get("window").width-70 + 20;
     const scrollX = React.useRef(new Animated.Value(0)).current;
-
-    const commonSongCatcher = () => { //find common songs; uses songlist1 and songlist2
+    let songCount = 0;
+    const commonSongCatcher = (songlist1, songlist2) => { //find common songs; uses songlist1 and songlist2
         const songSet = new Set();
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {
@@ -68,83 +40,91 @@ const ResultPage = ({userpic1, userpic2, displayName1,displayName2, username2, c
         return songList;
         // console.log(commonSongLocal[0].track?.album?.images[0]?.url);
     }
-    const commonSongLocal = commonSongCatcher();
-
-    const genreCounter = () => { //count and aggregate all genres
-
-    }
-    commonSongCatcher();
-
+    const commonSongLocal = commonSongCatcher(resultsData[0].songData.songlist, resultsData[1].songData.songlist);
 
     return (
         <View style = {styles.Container}>
-            <View style={{display:"flex", alignItems: "flex-start", justifyContent:"center", width: "100%", paddingLeft: 10,marginTop: 55, marginBottom: 35,}}>
-                <Text style={{color:"white", fontSize: 40, color: "#e6e6e6"}}>MusicMatch</Text>
+            <View style={{display:"flex", alignItems: "flex-start", justifyContent:"center", width: "100%", paddingLeft: 10,marginTop: 70, marginBottom: 25, marginLeft: 15}}>
+                <Text style={{color:"white", fontSize: 45, color: "#e6e6e6"}}>MusicMatch</Text>
             </View>
             <View style={styles.basicInfoContainer}>
-                <BasicInfo displayName={displayName1} userpic={userpic1} chosenPlaylistName={chosenPlaylistName1}/>
-                <BasicInfo displayName={displayName2} userpic={userpic2} chosenPlaylistName={chosenPlaylistName2}/>
+                {resultsData.map((profile)=> {
+                    return(
+                        <BasicInfo displayName={profile.user.displayName} userpic={profile.user.userImage} chosenPlaylistName={profile.songData.playlistName}/>
+                    )
+                })}
             </View>     
-            <View style={{display: "flex", flexDirection:"row", justifyContent: "space-between", width: "100%", padding: 10,marginTop:10}}>   
-                <Text style={{color:"white"}}>Common Songs </Text>
-                <Text style = {{color:"white"}}>{songCount}</Text>
-            </View>
-            <View>
-                <Animated.FlatList style={styles.flatlistContainer}
-                keyExtractor={(item) => item.id}
-                data={commonSongLocal}
-                horizontal={true}
-                onScroll={Animated.event(
-                    [{nativeEvent:{contentOffset: {x: scrollX}}}],
-                    {useNativeDriver: true},
-                )}
-                renderItem={({item, index}) => {
-                    /*@TODO: try making the normal scale of the items super small and only enlarge when its within the 'viewing area' */
-                    const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.9)];
-                    const scale = scrollX.interpolate({
-                        inputRange,
-                        outputRange: [1, 1, 1, 0],
-                    });
-                    const opacityInputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.2), ITEM_SIZE * (index+1.5)];
-                    const opacity = scrollX.interpolate({
-                        inputRange: opacityInputRange,
-                        outputRange: [1, 1, 1, .3, 0],
-                    });
+            <View style={{width:'100%', display:'flex', justifyContent:'center',marginBottom:20, alignItems:'center'}}>
+                <View style={{display: "flex", flexDirection:"row", justifyContent: "space-between", width: "100%", padding: 10,marginTop:10}}>   
+                    <Text style={{color:"white"}}>Common Songs </Text>
+                    <Text style = {{color:"white"}}>{songCount}</Text>
+                </View>
+                <Animated.FlatList 
+                    style={styles.flatlistContainer}
+                    keyExtractor={(item) => item.id}
+                    data={commonSongLocal}
+                    horizontal={true}
+                    onScroll={Animated.event(
+                        [{nativeEvent:{contentOffset: {x: scrollX}}}],
+                        {useNativeDriver: true},
+                    )}
+                    renderItem={({item, index}) => {
+                        /*@TODO: try making the normal scale of the items super small and only enlarge when its within the 'viewing area' */
+                        const inputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.9)];
+                        const scale = scrollX.interpolate({
+                            inputRange,
+                            outputRange: [1, 1, 1, 0],
+                        });
+                        const opacityInputRange = [-1, 0, ITEM_SIZE*index, ITEM_SIZE * (index+1.2), ITEM_SIZE * (index+1.5)];
+                        const opacity = scrollX.interpolate({
+                            inputRange: opacityInputRange,
+                            outputRange: [1, 1, 1, .3, 0],
+                        });
 
-                    return <Animated.View style = {{
-                                width:Dimensions.get("window").width - 70,
-                                maxWidth:Dimensions.get("window").width - 70,
-                                backgroundColor: "black",
-                                borderRadius: 20,
-                                margin: 10,
-                                shadowColor: "black",
-                                shadowOffset: {
-                                    width:-3,
-                                    height: 3
-                                }, 
-                                shadowOpacity: 1,
-                                shadowRadius: 8,
-                                transform: [{scale}], 
-                                opacity
-                                }}>
-                                <TouchableOpacity style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    padding: 10,
-                                    alignItems: "center",
-                                    justifyContent: 'flex-start',}}>
-                                    <Image
-                                        style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
-                                        source = {{uri: item.track?.album?.images[0]?.url}}
-                                    />  
-                                    <View>
-                                        <Text style={{color:"white", fontSize: 20}}>{item?.track?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
-                                        <Text style={{color:"white", fontSize: 10}}>{item?.track?.artists[0]?.name}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </Animated.View>
-                            }}
+                        return <Animated.View style = {{
+                                    maxHeight:'100%',
+
+                                    width:Dimensions.get("window").width - 70,
+                                    maxWidth:Dimensions.get("window").width - 70,
+                                    backgroundColor: "black",
+                                    borderRadius: 7,
+                                    margin: 11,
+                                    shadowColor: "black",
+                                    shadowOffset: {
+                                        width:-3,
+                                        height: 3
+                                    }, 
+                                    shadowOpacity: 1,
+                                    shadowRadius: 8,
+                                    transform: [{scale}], 
+                                    opacity,
+                                    }}
+                                    key={index}>
+                                    <TouchableOpacity style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        padding: 10,
+                                        alignItems: "center",
+                                        justifyContent: 'flex-start',}}>
+                                        <Image
+                                            style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
+                                            source = {{uri: item.track?.album?.images[0]?.url}}
+                                        />  
+                                        <View>
+                                            <Text style={{color:"white", fontSize: 20}}>{item?.track?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
+                                            <Text style={{color:"white", fontSize: 10}}>{item?.track?.artists[0]?.name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </Animated.View>
+                                }
+                    }
                 />
+            </View>
+            <View style={{flex:1,display:'flex', justifyContent:'center', alignItems:'flex-start', width:'100%', marginLeft: 20}}>
+                <Text style={{color:'white'}}>
+                    Top Artists
+                </Text>
+                <Bargraph width={480} height={400} resultsData={resultsData}/>
             </View>
         </View>
     );
@@ -156,6 +136,7 @@ const styles = StyleSheet.create({
       display: "flex",
       flexDirection: "column",
       alignItems: 'center',
+      justifyContent:'flex-start',
       width: "100%",
       height: "100%",
       backgroundColor: '#121212',
@@ -166,12 +147,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly',
         width: "100%",
-        marginTop: 20,
+        marginTop: 13,
     },
     flatlistContainer: {
       padding: 8,
       width: Dimensions.get("window").width,
-      maxHeight: "38%",
     },
     textfield:{
         fontFamily: 'System',
@@ -181,7 +161,7 @@ const styles = StyleSheet.create({
     commonSongCount:{
         fontFamily: 'System',
         textAlign: "center",
-        borderRadius: 10,
+        borderRadius: 7,
         color: "white"
     },
   });
