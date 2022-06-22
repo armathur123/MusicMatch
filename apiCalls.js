@@ -38,3 +38,11 @@ export const userFetch = async(userID, tokenResponse) => {
     return getUserProfile;
 } 
 
+export const getArtists = (artistIDs, tokenResponse) => {
+  let artistgrab = axios(`https://api.spotify.com/v1/artists`, { 
+    params:{ids:artistIDs},
+    method: 'GET',
+    headers: { 'Authorization' : 'Bearer ' + tokenResponse.data.access_token} //requires auth token (tokenresponse)
+  });
+  return artistgrab;
+}

@@ -10,19 +10,15 @@ import { tokenFetch, playlistFetch, userFetch} from '../apiCalls';
 
 const Playlistinput = ({ navigation, navPage}) => {
 
-  useEffect(() => {
-    console.log()
-  },[songlist])
-
   const [token, setToken] = useState('');
   const [user, setUser] = useState({displayName: '', username:'', userImage: null});
   const [playlistData, setPlaylistData] = useState([])
   const [message, setMessage] = useState('');
   const {promiseInProgress} = usePromiseTracker();
   const [selectedItem, setSelectedItem] = useState('')
-  const [songlist, setSonglist] = useState([]);
+  const [songData, setSongData] = useState([]);
 
-  const getSongs = (token, playlistID, setSongList, currentCount, total, offset,songlistLocal) => {
+  const getSongs = (token, playlistID, setSongData, currentCount, total, offset,songlistLocal, playlistname) => {
     const songRequest = axios(`https://api.spotify.com/v1/playlists/${playlistID}/tracks?offset=${offset}`, {
       method: 'GET',
       headers: { 'Authorization' : 'Bearer ' + token}
@@ -35,12 +31,14 @@ const Playlistinput = ({ navigation, navPage}) => {
         currentCount += count; //set current songcount
         // songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
         songlistLocal = [...songlistLocal, ...songsRaw.data.items];
-        // setSongList(prev => [...prev, ...songsRaw.data.items])
+        // setSongData(prev => [...prev, ...songsRaw.data.items])
         if (currentCount < total){ //recursively calls until entire playlist has been gotten
-          getSongs(token, playlistID, setSongList, currentCount, total, currentCount, songlistLocal)
+          getSongs(token, playlistID, setSongData, currentCount, total, currentCount, songlistLocal, playlistname)
         }
         else { //all songs have been caught, sets songlist
-          setSongList(songlistLocal);
+          const songData = {playlistName: playlistname, songlist:songlistLocal};
+          console.log(songData)
+          setSongData(songData);
           return;
         }
       }));
@@ -68,24 +66,21 @@ const Playlistinput = ({ navigation, navPage}) => {
               onChangeText={(val) => {
                   tokenFetch().then((tokenData) => {
                     setToken(tokenData.data.access_token);
-                    const username = val.trim();
+                    const username = '12176356166'; //temp hardcode for testing
                     playlistFetch(username,tokenData).then((playlistRaw) => {
                       setPlaylistData(playlistRaw?.data?.items);
                     });
                     userFetch(username, tokenData).then((profileRaw) => {
                       setUser(prev => {
                         prev.displayName = profileRaw.data.display_name;
-                        prev.userImage = profileRaw?.data.images[0]?.url;
-                        // console.log('rofileRaw.data.images[0].url');
-                        // console.log(profileRaw.data.images[0].url);
                         prev.username = username;
-                        console.log('prev')
-                        console.log(prev)
+                        prev.userImage = profileRaw?.data.images[0]?.url;
                         return prev; 
                       });
                     });
                   });
-                  setSonglist([]);
+                  setSongData([]);
+
                 }}/>
             </View> 
           </View>
@@ -97,9 +92,11 @@ const Playlistinput = ({ navigation, navPage}) => {
                 renderItem={({item}) => (
                   <TouchableOpacity 
                     onPress={() => {
-                      setSonglist([]);
+                      setSongData([]);
                       setSelectedItem(item.id);
-                      getSongs(token, item.id, setSonglist, 0, 0, 0,[]); //current count, total, and offset start at 0
+                      console.log("item.name")
+                      console.log(item.name)
+                      getSongs(token, item.id, setSongData, 0, 0, 0,[], item.name); //current count, total, and offset start at 0
                     }}  
                     style = {
                       (item.id === selectedItem) ? 
@@ -115,7 +112,7 @@ const Playlistinput = ({ navigation, navPage}) => {
                   </TouchableOpacity>
                 )}
               />
-              <NextButton navigation={navigation} navPage={navPage} promiseInProgress={promiseInProgress} songlist={songlist} user={user}></NextButton>
+              <NextButton navigation={navigation} navPage={navPage} promiseInProgress={promiseInProgress} songData={songData} user={user}></NextButton>
             </View>
           }
         </View>
