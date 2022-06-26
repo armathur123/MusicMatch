@@ -6,9 +6,6 @@ import YAxis from './YAxis';
 import Columns from './Columns';
 
 const Bargraph = ({resultsData, width}) => {
-    useEffect(() => {
-        console.log(resultsData[0].artistData.slice(0,10))
-    })
 
     let xAxisHeight = 100;
     const xAxisData = useMemo(() => resultsData[0].artistData.slice(0,5).flatMap(item => Object.values(item)[0]), [resultsData]);

@@ -16,8 +16,9 @@ import Bargraph from '../components/Bargraph/Bargraph';
 */
 
 const ResultPage = ({}) => {
-    const {resultsData, setResultsData} = useContext(PlaylistDataContext);
+    const {resultsData} = useContext(PlaylistDataContext);
     useEffect(()=> {
+        console.log('resultsData')
         console.log(resultsData)
     })
 
@@ -40,7 +41,13 @@ const ResultPage = ({}) => {
         return songList;
         // console.log(commonSongLocal[0].track?.album?.images[0]?.url);
     }
+    
+    const commonArtistCatcher = (artistList1, artistList2) => {
+        console.log('commonArtistCatcher');
+    }
+
     const commonSongLocal = commonSongCatcher(resultsData[0].songData.songlist, resultsData[1].songData.songlist);
+    commonArtistCatcher(resultsData[0].artistData, resultsData[1].artistData);
 
     return (
         <View style = {styles.Container}>
@@ -54,7 +61,7 @@ const ResultPage = ({}) => {
                     )
                 })}
             </View>     
-            <View style={{width:'100%', display:'flex', justifyContent:'center',marginBottom:20, alignItems:'center'}}>
+            <View style={{width:'100%', display:'flex', justifyContent:'center', alignItems:'center'}}>
                 <View style={{display: "flex", flexDirection:"row", justifyContent: "space-between", width: "100%", padding: 10,marginTop:10}}>   
                     <Text style={{color:"white"}}>Common Songs </Text>
                     <Text style = {{color:"white"}}>{songCount}</Text>
@@ -120,11 +127,11 @@ const ResultPage = ({}) => {
                     }
                 />
             </View>
-            <View style={{flex:1,display:'flex', justifyContent:'center', alignItems:'flex-start', width:'100%', marginLeft: 20}}>
+            <View style={{flex:1,display:'flex', justifyContent:'center', alignItems:'flex-start', width:'100%'}}>
                 <Text style={{color:'white'}}>
                     Top Artists
                 </Text>
-                <Bargraph width={480} height={400} resultsData={resultsData}/>
+                <Bargraph width={480} height={300} resultsData={resultsData}/>
             </View>
         </View>
     );

@@ -8,7 +8,7 @@ const XAxis = ({width, height, data}) => {
 
 
   const getValuePosition = (index, values, width) => {
-    let x = scaleBand().rangeRound([20, width - 55])
+    let x = scaleBand().rangeRound([40, width - 55])
     x.domain(values.map(d => {
       return d;
     }));
@@ -24,11 +24,11 @@ const XAxis = ({width, height, data}) => {
             key={index}
             /*x= THE NEXT STEP */
             stroke="white"
-            fontSize="5"
+            fontSize="9"
             x={getValuePosition(index, data, width)}
             y="10"
             textAnchor="middle"            >
-              {item}
+              {item.slice(0, 12)}
           </Text>})}
       </G>
     </Svg>

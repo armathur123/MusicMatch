@@ -9,17 +9,8 @@ import { tokenFetch, getArtists } from '../apiCalls';
 
 const NextButton = ({navigation, navPage, promiseInProgress, songData, user}) => {
 
-  useEffect(() => {
-    console.log('songData')
-    console.log(songData)
-  })
   const {resultsData, setResultsData} = useContext(PlaylistDataContext);
   const songlist = songData?.songlist || [];
-  
-  useEffect(() => {
-    console.log('resultsData');
-    console.log(resultsData);
-  }, [resultsData]);
 
   const recurringIndexFinder = (string, searchCharacter, index) => {
     
@@ -115,7 +106,7 @@ const NextButton = ({navigation, navPage, promiseInProgress, songData, user}) =>
               <TouchableOpacity 
                 style = {styles.button} 
                 onPress={nextButtonPress}>
-                <Icon name='chevron-right' size={75} color="white" />
+                <Icon name='chevron-right' size={65} color="white" />
               </TouchableOpacity>}
         </View>
     );
@@ -125,8 +116,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     right: 5,
-    bottom: 7,
-    paddingBottom: 20,
+    bottom: 27,
   },
   loader: {
     position: 'absolute',
@@ -139,8 +129,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: 7,
     marginRight: "7%",
+    width:"70%",
+    borderRadius:50,
+    paddingTop: 4,
+    paddingBottom: 4
   },
   activityIndicator: {
     padding: 7,

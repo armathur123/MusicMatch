@@ -37,7 +37,6 @@ const Playlistinput = ({ navigation, navPage}) => {
         }
         else { //all songs have been caught, sets songlist
           const songData = {playlistName: playlistname, songlist:songlistLocal};
-          console.log(songData)
           setSongData(songData);
           return;
         }
@@ -94,8 +93,6 @@ const Playlistinput = ({ navigation, navPage}) => {
                     onPress={() => {
                       setSongData([]);
                       setSelectedItem(item.id);
-                      console.log("item.name")
-                      console.log(item.name)
                       getSongs(token, item.id, setSongData, 0, 0, 0,[], item.name); //current count, total, and offset start at 0
                     }}  
                     style = {
