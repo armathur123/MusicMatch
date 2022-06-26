@@ -30,7 +30,7 @@ const ResultPage = ({}) => {
         const songSet = new Set();
         for (const song1 of songlist1) {
             for (const song2 of songlist2) {
-                if (song1?.track?.id == song2?.track?.id){
+                if (song1?.id == song2?.id){
                     songCount += 1
                     songSet.add(song1);
                 }
@@ -44,6 +44,23 @@ const ResultPage = ({}) => {
     
     const commonArtistCatcher = (artistList1, artistList2) => {
         console.log('commonArtistCatcher');
+    }
+
+    const commonCatcher = (array1, array2, isEquals) => {
+        const smallerArray = smallerArray(array1, array2);
+        const smallerMap = new Map();
+        for (const item of smallerArray) {
+            smallerMap.set(item.id)
+        }
+    }
+
+    const smallerArray = (array1, array2) => {
+        if (array1.length < array2.length) {
+            return array1;
+        }
+        else {
+            return array2;
+        }
     }
 
     const commonSongLocal = commonSongCatcher(resultsData[0].songData.songlist, resultsData[1].songData.songlist);
@@ -115,11 +132,11 @@ const ResultPage = ({}) => {
                                         justifyContent: 'flex-start',}}>
                                         <Image
                                             style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
-                                            source = {{uri: item.track?.album?.images[0]?.url}}
+                                            source = {{uri: item.album?.images[0]?.url}}
                                         />  
                                         <View>
-                                            <Text style={{color:"white", fontSize: 20}}>{item?.track?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
-                                            <Text style={{color:"white", fontSize: 10}}>{item?.track?.artists[0]?.name}</Text>
+                                            <Text style={{color:"white", fontSize: 20}}>{item?.name.substring(0,17) /* @TODO conditional '..' for names that are too long */}</Text> 
+                                            <Text style={{color:"white", fontSize: 10}}>{item?.artists[0]?.name}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 </Animated.View>

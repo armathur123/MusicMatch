@@ -30,7 +30,7 @@ const Playlistinput = ({ navigation, navPage}) => {
         let count = songsRaw?.data?.items.length;
         currentCount += count; //set current songcount
         // songlistLocal = songlistLocal.concat(songsRaw?.data?.items);
-        songlistLocal = [...songlistLocal, ...songsRaw.data.items];
+        songlistLocal = [...songlistLocal, ...songsRaw.data.items.map((item) => item.track)];
         // setSongData(prev => [...prev, ...songsRaw.data.items])
         if (currentCount < total){ //recursively calls until entire playlist has been gotten
           getSongs(token, playlistID, setSongData, currentCount, total, currentCount, songlistLocal, playlistname)

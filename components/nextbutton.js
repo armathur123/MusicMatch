@@ -7,6 +7,17 @@ import { PlaylistDataContext } from '../contexts/PlaylistDataContext';
 import { tokenFetch, getArtists } from '../apiCalls';
 
 
+const countCompare = (a, b) => {
+  if (a.id > b.id) { 
+    return 1;
+  }
+  else if (a.id < b.id) {
+    return -1;
+  }
+  return 0;
+}
+
+
 const NextButton = ({navigation, navPage, promiseInProgress, songData, user}) => {
 
   const {resultsData, setResultsData} = useContext(PlaylistDataContext);
@@ -16,15 +27,6 @@ const NextButton = ({navigation, navPage, promiseInProgress, songData, user}) =>
     
   }
 
-  const countCompare = (a, b) => {
-    if (a.count > b.count) { 
-      return -1;
-    }
-    else if (a.count < b.count) {
-      return 1;
-    }
-    return 0;
-  }
 
   const getGenres = (artistData) => {
     let genreData = [];
@@ -66,19 +68,23 @@ const NextButton = ({navigation, navPage, promiseInProgress, songData, user}) =>
 
   const nextButtonPress = async() => {
     let artistData = [];
-    for (const {track, ...rest} of songlist) {
-      if (track !== null && track !== undefined) {
-        for (const artist of track.artists) {
-          const existingArtist = artistData.findIndex((el) => {return el.id == artist.id});
-          if (artistData[existingArtist] === undefined) {
-            const artistObj = {name: artist?.name, count: 1, id: artist?.id}
-            artistData.push(artistObj);
-          } else {
-            artistData[existingArtist].count += 1;
-          }
+    console.log('songlist');
+    console.log(songlist);
+    for (const {artists, ...rest} of songlist) {
+      for (const artist of artists) {
+        const existingArtist = artistData.findIndex((el) => {return el.id == artist.id});
+        if (artistData[existingArtist] === undefined) {
+          const artistObj = {name: artist?.name, count: 1, id: artist?.id}
+          artistData.push(artistObj);
+        } else {
+          artistData[existingArtist].count += 1;
         }
       }
     }
+    console.log('artistData')
+    console.log(artistData)
+    // sort songdata and artist data by ID (useful for later when we're searching for commonalities)
+    songlist.sort(countCompare);
     artistData.sort(countCompare);
     const genreData = await getGenres(artistData);
     const userObj = {songData, user, artistData, genreData};
