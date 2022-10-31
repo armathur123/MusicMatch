@@ -66,7 +66,7 @@ const Playlistinput = ({ navigation, navPage}) => {
               onChangeText={(val) => {
                   tokenFetch().then((tokenData) => {
                     setToken(tokenData.data.access_token);
-                    const username = '12176356166'; //temp hardcode for testing
+                    const username = 'abuhelos'; //temp hardcode for testing 12176356166
                     playlistFetch(username,tokenData).then((playlistRaw) => {
                       setPlaylistData(playlistRaw?.data?.items);
                     });
