@@ -50,7 +50,7 @@ const ResultPage = ({}) => {
             <View style={styles.basicInfoContainer}>
                 {resultsData.map((profile)=> {
                     return(
-                        <BasicInfo displayName={profile.user.displayName} userpic={profile.user.userImage} chosenPlaylistName={profile.songData.playlistName}/>
+                        <BasicInfo key={profile.user.username+profile.songData.playlistName} displayName={profile.user.displayName} userpic={profile.user.userImage} chosenPlaylistName={profile.songData.playlistName}/>
                     )
                 })}
             </View>     
@@ -61,7 +61,7 @@ const ResultPage = ({}) => {
                 </View>
                 <Animated.FlatList 
                     style={styles.flatlistContainer}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.track.id}
                     data={commonSongLocal}
                     horizontal={true}
                     onScroll={Animated.event(

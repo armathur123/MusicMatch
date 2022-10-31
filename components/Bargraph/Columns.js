@@ -24,9 +24,10 @@ const Columns = ({width, height, xAxisData, data}) => {
   return (
     <Svg width={width} height={height}     style={{ transform: [{ scaleY:-1 }] }}>
         {data.map((item, index) => {
-            console.log(item)
+            console.log(`Item: ${item}`)
+            console.log(`Index: ${index}`)
             return <Rect
-                key={item.label}
+                key={index}
                 x={getValuePosition(index, xAxisData, width)}
                 y={-10}
                 rx={2.5}
