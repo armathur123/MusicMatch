@@ -10,6 +10,8 @@ import ResultPage from './components/resultpage';
 import LoginExample from './components/loginExample';
 import { PlaylistDataContext } from './contexts/PlaylistDataContext';
 import { tokenFetch, playlistFetch, userFetch } from './apiCalls';
+import { LinearGradient } from 'react-native-svg';
+import { axisLeft } from 'd3';
 
 
 export default function App() {
@@ -33,7 +35,8 @@ export default function App() {
       <PlaylistDataContext.Provider value={{resultsData, setResultsData}}>
         <Stack.Navigator //hide top header bar
           screenOptions={{
-            headerShown: false
+            headerShown: false,
+            headerStyle:  {backgroundColor:'#32cc8c'}
           }}
         >
           {/* <Stack.Screen name="loginExample">
