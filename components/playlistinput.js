@@ -8,6 +8,9 @@ import {Dimensions} from 'react-native';
 import {usePromiseTracker} from "react-promise-tracker";
 import { tokenFetch, playlistFetch, userFetch} from '../apiCalls';
 
+import ProfilePlaceholder from "../assets/profile-user-account-svgrepo-com.svg";
+
+
 const Playlistinput = ({ navigation, navPage}) => {
 
   const [token, setToken] = useState('');
@@ -26,6 +29,7 @@ const Playlistinput = ({ navigation, navPage}) => {
     //track promise helps run loading animation as long as function continues
     trackPromise(songRequest
       .then (songsRaw => {
+        console.log(songsRaw)
         total = songsRaw?.data?.total; //set total number of songs (api iterations)
         let count = songsRaw?.data?.items.length;
         currentCount += count; //set current songcount
@@ -53,7 +57,11 @@ const Playlistinput = ({ navigation, navPage}) => {
                 style={{width: 60, height: 60, borderRadius: 30, marginRight: 20}}
                 source = {{uri: user.userImage}}
               />:
-              <Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>}
+              <ProfilePlaceholder style={{marginRight: 20, borderRadius: 30}} width={60} height={60}/>}
+              {
+                //<Ionicons style={styles.searchIcon} name="person-circle-outline" size={40} color="white"/>}
+              //<Ionicons style={styles.searchIcon} name="ios-search" size={15} color="white"/>
+              }
               {(!playlistData.length == 0) ? <Text style={styles.usernameTextField}>{user.displayName}</Text> : <Text style={styles.usernameTextField}>{message}</Text>}
             </View>}
             <View style={styles.searchSection}>
@@ -66,7 +74,7 @@ const Playlistinput = ({ navigation, navPage}) => {
               onChangeText={(val) => {
                   tokenFetch().then((tokenData) => {
                     setToken(tokenData.data.access_token);
-                    const username = '12176356166'; //temp hardcode for testing
+                    const username = '12176356166'; //temp hardcode for testing: 12176356166
                     playlistFetch(username,tokenData).then((playlistRaw) => {
                       setPlaylistData(playlistRaw?.data?.items);
                     });
@@ -157,7 +165,8 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderRadius: 5,
     height: "30%",
-    marginTop: 20
+    marginTop: 35,
+    marginBottom: 15,
   },
   searchIcon: {
     padding: 10,
