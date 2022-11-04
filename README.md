@@ -9,3 +9,5 @@ global.cli is not a function fix:
 
 Node -v: 16.13.2
 NPM -v: 8.1.3
+
+Run this patch everytime expo updates (until you update props in the code): https://stackoverflow.com/questions/72755476/invariant-violation-viewproptypes-has-been-removed-from-react-native-migrate-t
