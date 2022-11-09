@@ -6,6 +6,7 @@ import { shadowColor } from 'react-native/Libraries/Components/View/ReactNativeS
 let themeColor = 'rgb(218,165,32)';
 import { PlaylistDataContext } from '../contexts/PlaylistDataContext';
 import Bargraph from '../components/Bargraph/Bargraph';
+import * as Linking from 'expo-linking';
 
 /*@TODOS
     play song from touchable opacity
@@ -100,12 +101,14 @@ const ResultPage = ({}) => {
                                     opacity,
                                     }}
                                     key={index}>
-                                    <TouchableOpacity style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        padding: 10,
-                                        alignItems: "center",
-                                        justifyContent: 'flex-start',}}>
+                                    <TouchableOpacity 
+                                        onPress={() => Linking.openURL(item.track.external_urls.spotify)}
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            padding: 10,
+                                            alignItems: "center",
+                                            justifyContent: 'flex-start',}}>
                                         <Image
                                             style={{width: 60, height: 60, marginRight: 20, marginLeft:20, borderRadius: 8}}
                                             source = {{uri: item.track?.album?.images[0]?.url}}
